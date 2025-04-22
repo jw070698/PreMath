@@ -1,0 +1,66 @@
+.home-container {
+  width: 100%;
+  height: calc(100dvh);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.home-button {
+  background-color: #f9f9f9;
+  width: 50%;
+  /* height: 1%; */
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  /* padding: 20px; */
+  /* margin: 20px 10px; */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.1s; /* 背景颜色过渡效果 */
+}
+
+.home-button:hover {
+  background-color: #ddd; /* 悬停时 .scenario-button 的背景颜色 */
+  color: #000000; /* 悬停时按钮的文字颜色 */
+}
+
+.guidance {
+  max-width: 60%;
+}
+
+.form-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.form-container h2 {
+  margin-bottom: 16px;
+}
+
+.form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-container label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-container input {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.form-container button:hover {
+  background-color: #ddd;
+  color: #000000;
+}

@@ -1,0 +1,189 @@
+.Baseline {
+  left: 38%;
+  width: 60%;
+  height: 100%;
+  overflow-y: auto;
+  border: 2px solid #c2b8c2;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.baseline-container {
+  width: 100%;
+  margin: 0 auto; /* place center */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 可选：设置每个学生之间的间距 */
+  overflow: hidden; /* 可选：设置学生信息块的滚动条 */
+  position: relative;
+}
+
+.baseline-inner-container {
+  width: 100%;
+  margin: 0 auto; /* place center */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 可选：设置每个学生之间的间距 */
+  overflow: auto; /* 可选：设置学生信息块的滚动条 */
+  position: absolute;
+  inset: 0;
+}
+
+.Baseline input[type="text"] {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  background-color: #f9f9f9;
+}
+
+.Baseline button {
+  width: 20%;
+  padding: 10px 20px;
+  background-color: #f9f9f9;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.Baseline button:hover {
+  background-color: #ddd;
+  color: #000;
+}
+
+.table-container {
+  height: 60vh;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+.user-input {
+  width: 75%;
+  height: 40px;
+  padding: 10px;
+  font-size: 18px;
+  margin-right: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  resize: vertical;
+  font-family: "Public Sans", sans-serif;
+  font-size: 16px;
+}
+
+.user-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.submit-button {
+  width: 12.5%; /* 减少宽度 */
+  /* padding: 10px 15px;  减少按钮的宽度 */
+  font-size: 16px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  height: fit-content;
+  color: black;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+.user-answers-section {
+  margin-top: 30px;
+}
+
+.user-answers-list {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.user-answer-item {
+  padding: 5px;
+  font-size: 14px;
+  border-bottom: 1px solid #ddd;
+}
+
+.user-answer-item:last-child {
+  border-bottom: none;
+}
+
+.table-container {
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table,
+th,
+td {
+  border: 1px solid #ddd;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+.expand-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #f9f9f9;
+  border: 2px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  padding: 8px;
+  margin-right: 8px;
+}
+
+.expand-button:hover {
+  background-color: #ddd;
+  color: #000;
+}

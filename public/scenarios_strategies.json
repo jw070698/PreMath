@@ -1,0 +1,523 @@
+{
+    "list": [
+        {
+            "scenario": "Students don't attend the class",
+            "strategies": [
+                {
+                    "category": "Show empathy and respect toward students",
+                    "instances": [
+                        "Demonstrate concern for their student.",
+                        "Avoid Emotional Responses."
+                    ]
+                },
+                {
+                    "category": "Promote community and peer interaction",
+                    "instances": [
+                        "Encourages contact between students and faculty."
+                    ]
+                },
+                {
+                    "category": "Active learning",
+                    "instances": [
+                        "Encourages active learning, structured exercises,challenging discussions, team projects, and peer critiques."
+                    ]
+                },
+                {
+                    "category": "Give autonomy to students",
+                    "instances": [
+                        "Allow students to participate in decision-making and assessment."
+                    ]
+                },
+                {
+                    "category": "Group work",
+                    "instances": [
+                        "Assign Responsibilities.",
+                        "Use group chats to discuss class matters and common interests."
+                    ]
+                },
+                {
+                    "category": "Academic/Behavioral expectations",
+                    "instances": [
+                        "Ensure students are on time.",
+                        "Be a role model in behavior."
+                    ]
+                },
+                {
+                    "category": "Persistence",
+                    "instances": [
+                        "Don't allow students to give up, scaffold until they succeed."
+                    ]
+                }
+            ]
+        },
+        {
+            "scenario": "Students know the answer to something but don't reply",
+            "strategies": [
+                {
+                    "category": "Promote community and peer interaction",
+                    "instances": [
+                        "Facilitate warm social interaction.",
+                        "Develops reciprocity and cooperation among students.",
+                        "Promote growth mindset."
+                    ]
+                },
+                {
+                    "category": "Feedback prompt, correct, positive, and personalized",
+                    "instances": [
+                        "Be Free with Praise and Constructive in Criticism.",
+                        "Provide various types of feedback."
+                    ]
+                },
+                {
+                    "category": "Persistence",
+                    "instances": [
+                        "Treat each student as capable - believe that students want to learn.",
+                        "Don't allow students to give up, scaffold until they succeed."
+                    ]
+                },
+                {
+                    "category": "Give autonomy to students",
+                    "instances": [
+                        "Allow students to participate in decision-making and assessment."
+                    ]
+                },
+                {
+                    "category": "Group work",
+                    "instances": [
+                        "Use group chats to discuss class matters and common interests.",
+                        "Let students interact with classmates through presentations."
+                    ]
+                },
+                {
+                    "category": "Show empathy and respect toward students",
+                    "instances": [
+                        "Refer to students by name.",
+                        "Treat Learners as Special Individuals.",
+                        "Avoid Emotional Responses."
+                    ]
+                },
+                {
+                    "category": "Set academic goals",
+                    "instances": [
+                        "Show the Need for the Lesson."
+                    ]
+                }
+            ]
+        },
+        {
+            "scenario": "Students not confident in themself",
+            "strategies": [
+                {
+                    "category": "Show empathy and respect toward students",
+                    "instances": [
+                        "Respects diverse talents and ways of learning.",
+                        "Refer to students by name."
+                    ]
+                },
+                {
+                    "category": "Promote community and peer interaction",
+                    "instances": [
+                        "Promote growth mindset.",
+                        "Students introduce themselves and get familiar with each other.",
+                        "Facilitate warm social interaction."
+                    ]
+                },
+                {
+                    "category": "Set academic goals",
+                    "instances": [
+                        "Show the Need for the Lesson."
+                    ]
+                },
+                {
+                    "category": "Feedback prompt, correct, positive, and personalized",
+                    "instances": [
+                        "Be Free with Praise and Constructive in Criticism.",
+                        "Encouragement to positive behavior."
+                    ]
+                },
+                {
+                    "category": "Persistence",
+                    "instances": [
+                        "Don't allow students to give up, scaffold until they succeed."
+                    ]
+                },
+                {
+                    "category": "Group work",
+                    "instances": [
+                        "Work in groups during classes."
+                    ]
+                },
+                {
+                    "category": "Academic/Behavioral expectations",
+                    "instances": [
+                        "Be a role model in behavior."
+                    ]
+                }
+            ]
+        },
+        {
+            "scenario": "Student did not want to participate",
+            "strategies": [
+        
+                {
+                    "category": "Promote community and peer interaction",
+                    "instances": [
+                        "Develops reciprocity and cooperation among students.",
+                        "Facilitate warm social interaction."
+                    ]
+                },
+                {
+                    "category": "Active learning",
+                    "instances": [
+                        "Encourages active learning, structured exercises, challenging discussions, team projects, and peer critiques."
+                    ]
+                },
+                {
+                    "category": "Persistence",
+                    "instances": [
+                        "Treat each student as capable - believe that students want to learn."
+                    ]
+                },
+                {
+                    "category": "Group work",
+                    "instances": [
+                        "Students answer each others questions.",
+                        "Use group chats to discuss class matters and common interests."
+                    ]
+                },
+                {
+                    "category": "Show empathy and respect toward students",
+                    "instances": [
+                        "Treat Learners as Special Individuals."
+                    ]
+                }
+            ]
+        },
+        {
+            "scenario": "Some students learn faster and get bored",
+            "strategies": [
+                {
+                    "category": "Show empathy and respect toward students",
+                    "instances": [
+                        "Respects diverse talents and ways of learning."
+                    ]
+                },
+                {
+                    "category": "Promote community and peer interaction",
+                    "instances": [
+                        "Students introduce themselves and get familiar with each other."
+                    ]
+                },
+                {
+                    "category": "Group work",
+                    "instances": [
+                        "Assign Responsibilities."
+                    ]
+                },
+                {
+                    "category": "Academic/Behavioral expectations",
+                    "instances": [
+                        "Insist that students show respect and care for one another."
+                    ]
+                },
+                {
+                    "category": "Feedback prompt, correct, positive, and personalized",
+                    "instances": [
+                        "Encouragement to positive behavior."
+                    ]
+                }
+            ]
+        },
+        {
+            "scenario": "Students not pay attention to or not interested in the content the lecture content",
+            "strategies": [
+                {
+                    "category": "Show empathy and respect toward students",
+                    "instances": [
+                        "Refer to students by name.",
+                        "Respects diverse talents and ways of learning."
+                    ]
+                },
+                {
+                    "category": "Promote community and peer interaction",
+                    "instances": [
+                        "Students introduce themselves and get familiar with each other.",
+                        "Develops reciprocity and cooperation among students."
+                    ]
+                },
+                {
+                    "category": "Active learning",
+                    "instances": [
+                        "Encourages active learning, structured exercises, challenging discussions, team projects, and peer critiques.",
+                        "Encourages contact between students and faculty."
+                    ]
+                },
+                {
+                    "category": "Feedback prompt, correct, positive, and personalized",
+                    "instances": [
+                        "Provide various types of feedback."
+                    ]
+                },
+                {
+                    "category": "Group work",
+                    "instances": [
+                        "Assign Responsibilities."
+                    ]
+                },
+                {
+                    "category": "Give autonomy to students",
+                    "instances": [
+                        "Allow students to participate in decision-making and assessment."
+                    ]
+                }
+            ]
+        },
+        {
+            "scenario": "Students appear tired in the class",
+            "strategies": [
+                {
+                    "category": "Show empathy and respect toward students",
+                    "instances": [
+                        "Demonstrate concern for their student.",
+                        "Refer to students by name.",
+                        "Treat Learners as Special Individuals."
+                    ]
+                },
+                {
+                    "category": "Promote community and peer interaction",
+                    "instances": [
+                        "Develops reciprocity and cooperation among students.",
+                        "Promote growth mindset "
+                    ]
+                },
+                {
+                    "category": "Feedback prompt, correct, positive, and personalized",
+                    "instances": [
+                        "Gives prompt feedback.",
+                        "Provide Incentives.",
+                        "Be Free with Praise and Constructive in Criticism.",
+                        "Encouragement to positive behavior."
+                    ]
+                },
+                
+                {
+                    "category": "Group work",
+                    "instances": [
+                        "Assign Responsibilities.",
+                        "Let students interact with classmates through presentations."
+                    ]
+                },
+                {
+                    "category": "Set academic goals",
+                    "instances": [
+                        "Establish personal academic goals."
+                    ]
+                }
+            ]
+        },
+        {
+            "scenario": "Afraid to make mistakes",
+            "strategies": [
+                {
+                    "category": "Show empathy and respect toward students",
+                    "instances": [
+                        "Treat Learners as Special Individuals.",
+                        "Avoid Emotional Responses.",
+                        "Respects diverse talents and ways of learning."
+                    ]
+                },
+                {
+                    "category": "Feedback prompt, correct, positive, and personalized",
+                    "instances": [
+                        "Gives prompt feedback."
+                    ]
+                },
+                {
+                    "category": "Active learning",
+                    "instances": [
+                        "Encourages active learning, structured exercises, challenging discussions, team projects, and peer critiques."
+                    ]
+                },
+                {
+                    "category": "Promote community and peer interaction",
+                    "instances": [
+                        "Facilitate warm social interaction.",
+                        "Develops reciprocity and cooperation among students.",
+                        "Promote growth mindset."
+                    ]
+                },
+                {
+                    "category": "Persistence",
+                    "instances": [
+                        "Don't allow students to give up, scaffold until they succeed."
+                    ]
+                }
+                
+            ]
+        },
+        {
+            "scenario": "Students don't respond to asked questions/group messages",
+            "strategies": [
+                {
+                    "category": "Active learning",
+                    "instances": [
+                        "Expect active participation."
+                    ]
+                },
+                {
+                    "category": "Promote community and peer interaction",
+                    "instances": [
+                        "Develops reciprocity and cooperation among students.",
+                        "Promote growth mindset."
+                    ]
+                },
+                {
+                    "category": "Set academic goals",
+                    "instances": [
+                        "Establish personal academic goals.",
+                        "Show the Need for the Lesson."
+                    ]
+                },
+                {
+                    "category": "Show empathy and respect toward students",
+                    "instances": [
+                        "Refer to students by name.",
+                        "Demonstrate concern for their student."
+                    ]
+                },
+                {
+                    "category": "Academic/Behavioral expectations",
+                    "instances": [
+                        "Set clear expectation on student behavior."
+                    ]
+                },
+                {
+                    "category": "Group work",
+                    "instances": [
+                        "Work on group projects.",
+                        "Use group chats to discuss class matters and common interests."
+                    ]
+                },
+                
+                {
+                    "category": "Time constraint",
+                    "instances": [
+                        "Emphasizes time on task."
+                    ]
+                }
+            ]
+        },
+        {
+            "scenario": "Students don't show reaction to the taught content or never ask questions",
+            "strategies": [
+                {
+                    "category": "Promote community and peer interaction",
+                    "instances": [
+                        "Promote growth mindset.",
+                        "Develops reciprocity and cooperation among students."
+                    ]
+                },
+                {
+                    "category": "Active learning",
+                    "instances": [
+                        "Encourages active learning, structured exercises, challenging discussions, team projects, and peer critiques."
+                    ]
+                },
+                {
+                    "category": "Persistence",
+                    "instances": [
+                        "Present worksheet as personal challenge."
+                    ]
+                },
+                {
+                    "category": "Set academic goals",
+                    "instances": [
+                        "Show the Need for the Lesson."
+                    ]
+                },
+                {
+                    "category": "Academic/Behavioral expectations",
+                    "instances": [
+                        "Communicates high expectations.",
+                        "Be a role model in behavior."
+                    ]
+                },
+                {
+                    "category": "Show empathy and respect toward students",
+                    "instances": [
+                        "Demonstrate concern for their student."
+                    ]
+                },
+                {
+                    "category": "Group work",
+                    "instances": [
+                        "Let students interact with classmates through presentations."
+                    ]
+                },
+                {
+                    "category": "Give autonomy to students",
+                    "instances": [
+                        "Allow students to participate in decision-making and assessment."
+                    ]
+                }
+            ]
+        },
+        {
+            "scenario": "Students making very basic errors like subtraction or multiplication",
+            "strategies": [
+                {
+                    "category": "Active learning",
+                    "instances": [
+                        "Tutor provides practice tests.",
+                        "Encourages active learning, structured exercises, challenging discussions, team projects, and peer critiques."
+                    ]
+                },
+                {
+                    "category": "Set academic goals",
+                    "instances": [
+                        "Establish personal academic goals."
+                    ]
+                },
+                {
+                    "category": "Persistence",
+                    "instances": [
+                        "Present worksheet as personal challenge.",
+                        "Don't allow students to give up, scaffold until they succeed."
+                    ]
+                },
+                {
+                    "category": "Promote community and peer interaction",
+                    "instances": [
+                        "Develops reciprocity and cooperation among students.",
+                        "Promote growth mindset."
+                    ]
+                },
+                {
+                    "category": "Academic/Behavioral expectations",
+                    "instances": [
+                        "Insist that students show respect and care for one another."
+                    ]
+                },
+                {
+                    "category": "Feedback prompt, correct, positive, and personalized",
+                    "instances": [
+                        "Give Correct Guidance."
+                    ]
+                },
+                {
+                    "category": "Show empathy and respect toward students",
+                    "instances": [
+                        "Demonstrate concern for their student."
+                    ]
+                },
+                {
+                    "category": "Group work",
+                    "instances": [
+                        "Use group chats to discuss class matters and common interests."
+                    ]
+                }
+            ]
+        }
+    ]
+}
+

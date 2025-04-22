@@ -1,0 +1,17 @@
+/* 라벨 드롭다운 */
+.label-dropdown {
+    position: absolute;
+    background: white;
+    border: 1px solid #e4e6eb;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.label-dropdown select {
+    padding: 8px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    cursor: pointer;
+}

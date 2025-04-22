@@ -1,0 +1,63 @@
+.test-container {
+  width: 100%;
+  margin: 0 auto; /* place center */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 可选：设置每个学生之间的间距 */
+  overflow: auto; /* 可选：设置学生信息块的滚动条 */
+  height: 80%;
+  border: 2px solid #c2b8c2;
+}
+
+.test-container > div {
+  border: 1px solid #ccc; /* 可选：为每个学生信息块添加边框 */
+  padding: 10px; /* 可选：为每个学生信息块添加内边距 */
+}
+
+.Students {
+  left: 38%;
+  width: 78%;
+  height: 100%;
+  overflow: hidden;
+  border: 2px solid #c2b8c2;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-button {
+  background-color: #f9f9f9; /* 你可以根据需要更改颜色 */
+  /* height: 3%; */
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  /* padding: 20px; */
+  /* margin: 1% 2%; */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.1s; /* 背景颜色过渡效果 */
+  padding: 1% 1%;
+}
+
+.chat-button:hover {
+  background-color: #ddd; /* 悬停时 .scenario-button 的背景颜色 */
+  color: #000000; /* 悬停时按钮的文字颜色 */
+}
+
+.chat-input {
+  resize: none; /* 禁止调整输入框大小 */
+  font-family: "Public Sans", sans-serif; /* 设置输入框字体 */
+}
+
+.feedback-container {
+  /* height: 100%; */
+  /* display: flex; */
+  width: 100%;
+  background-color: #ffffff;
+  left: 12%;
+  /* margin: 0 auto; place center */
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* gap: 20px; 可选：设置每个学生之间的间距 */
+  /* border: 2px solid #c2b8c2; */
+  /* border-radius: 8px; */
+  height: 100%;
+}

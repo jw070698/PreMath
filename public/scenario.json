@@ -1,0 +1,72 @@
+{
+    "list": [
+        {
+            "scenario": "students don't attend the class (Q4)",
+            "strategies": [
+                "Ask students to be punctual(Q17)"
+            ]
+        },
+        {
+            "scenario": "students know the answer to something but don't reply (Q14)",
+            "strategies": [
+                "Give autonomy to your students to improve students' engagement"
+            ]
+        },
+        {
+            "scenario": "Students not confident in themself（Q5)",
+            "strategies": [
+                "Show concern and encouragement(p13)"
+            ]
+        },
+        {
+            "scenario": "student did not want to participate (Q9)",
+            "strategies": [
+                "Discuss behavioral expectations with your students"
+            ]
+        },
+        {
+            "scenario": "Some students learn faster and get bored (Q5)",
+            "strategies": [
+                "Use visual tools to add attractiveness(Q6)"
+            ]
+        },
+        {
+            "scenario": "students not pay attention to (not interested in) the content the lecture content (Q4)",
+            "strategies": [
+                "Use visual tools to add attractiveness(Q6)",
+                "Add activities that attract students(Q6)"
+            ]
+        },
+        {
+            "scenario": "Students appear tired in the class (Q5)",
+            "strategies": [
+                "Add activities that attract students(Q6)",
+                "Strategy: Explain to reduce students' burden(Q6)"
+            ]
+        },
+        {
+            "scenario": "Scenario:Afraid to make mistakes(Q17)",
+            "strategies": [
+                "Present yourself to your students as a positive role model to improve students' engagement(Q17)"
+            ]
+        },
+        {
+            "scenario": "Students don't respond to asked questions/group messages (Q4)",
+            "strategies": [
+                "Ask students to work together during/outside your tutoring sessions to improve students' engagement (Q16)"
+            ]
+        },
+        {
+            "scenario": "Students don't show reaction to the taught content (never ask questions) (Q4)",
+            "strategies": [
+                "Leave exercise (Q16)"
+            ]
+        },
+        {
+            "scenario": "students making very basic errors like subtraction or multiplication (Q16)",
+            "strategies": [
+                "Set time constraints for activities inside your tutoring sessions to improve students' engagement (Q15)"
+            ]
+        }
+    ]
+}
