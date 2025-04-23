@@ -594,14 +594,13 @@ const Students = () => {
                         }
                         <p ref={messagesEndRef} />
                         <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-                            <button className="chat-button" onClick={advanceDiagram}>Done</button>
                             <button 
                                 className="chat-button" 
                                 onClick={forceVerifyAllLabels}
-                                style={{ backgroundColor: '#4CAF50' }}
                             >
-                                Verify All Labels
+                                Done Labeling
                             </button>
+                            <button className="chat-button" onClick={advanceDiagram}>Diagram</button>
                         </div>
                     </div>
                     <div style={{ overflow: 'auto', display: 'flex', flexDirection: 'column', height: topHeight === '70%' ? '30%' : '70%' }}>

@@ -94,9 +94,9 @@ const Home = () => {
         };
   
         await setDoc(userDocRef, userInfo);
-        console.log(`Firestore에 사용자 ID ${participantIdInt} 정보가 추가되었습니다.`);
+        console.log(`Add ID ${participantIdInt} into Firestore.`);
       } else {
-        console.log(`사용자 ID ${participantIdInt}는 이미 Firestore에 존재합니다.`);
+        console.log(`ID ${participantIdInt} already exists.`);
       }
   
       if (participantId in ['1', '2', '3', '4', '5', '6'] || participantId === '6') {
@@ -114,8 +114,8 @@ const Home = () => {
       
       navigate('/scenarios');
     } catch (error) {
-      console.error("사용자 등록 중 오류 발생:", error);
-      alert("사용자 정보 저장 중 오류가 발생했습니다.");
+      console.error("Error saving user information:", error);
+      alert("Error saving user information.");
     } finally {
       setIsLoading(false);
     }
