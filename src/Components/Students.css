@@ -61,7 +61,7 @@
 }
 
 .student .message-bubble {
-  background-color: #c6d9f8 !important;
+  background-color: #d3e2f9 !important;
   border-radius: 20px;
   border-top-left-radius: 4px;
   max-width: 70%;
@@ -194,7 +194,7 @@
 }
 
 .student .message-content {
-  background-color: #c6d9f8;
+  background-color: #d3e2f9;
   float: left;
   border-bottom-left-radius: 4px;
   text-align: left;

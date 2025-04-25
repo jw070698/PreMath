@@ -12,6 +12,7 @@ import { getDatabase, get, ref, child, push, update, onValue, set } from "fireba
 import { db } from '../backend/firebase';
 import { RiExpandDiagonalLine, RiCollapseDiagonalLine } from 'react-icons/ri';
 import Diagram from './Diagram';
+import { LuFastForward } from 'react-icons/lu';
 
 const Students = () => {
     const { descriptionOfStudents, updateStudents, participantId, tutorUpSecenario, setDescriptionOfStudents, instantStrategies, setInstantStrategies, overallStrategies, setOverallStrategies, conversationDatabase, students, loadLog, scenarioIndex, initializeMessageBox, initializeConversation, updateConversation, updateMessageBox, studentInfo, conversation, messageBox, hasScenarioStarted, setHasScenarioStarted, setSelectedDropdownOption, setSelectedStudentName }
@@ -536,6 +537,92 @@ const Students = () => {
         }
     };
   
+    // 새로운 함수 추가: FastForward 버튼용 학생 대화 생성 함수
+    const advanceStudentConversation = async () => {
+        // 학생들이 응답 중인지 체크
+        if (areStudentsResponding) {
+            return;
+        }
+        
+        setAreStudentsResponding(true);
+        
+        try {
+            // 현재 대화에 참여 중인 학생들만 찾아서 응답하게 합니다
+            // 가장 최근 메시지의 발신자 파악
+            let lastSpeaker = "";
+            if (conversation.length > 0) {
+                lastSpeaker = conversation[conversation.length - 1].role;
+            }
+            
+            // 이미 대화에 참여 중인 학생 역할 목록 추출
+            const activeStudentRoles = new Set<string>();
+            conversation.forEach(msg => {
+                if (msg.role !== 'tutor') {
+                    activeStudentRoles.add(msg.role);
+                }
+            });
+            
+            // 마지막 발언자가 아닌 학생을 찾습니다
+            const nextStudentRoles = Array.from(activeStudentRoles).filter(role => role !== lastSpeaker);
+            if (nextStudentRoles.length === 0) return; // 대화할 다른 학생이 없는 경우
+            
+            const nextStudentRole = nextStudentRoles[0] as string; // 다음으로 대화할 학생
+            
+            // students 배열에서 해당 학생의 인덱스 찾기
+            let studentIdx = -1;
+            for (let i = 0; i < students.length; i++) {
+                if (studentInfo[students[i]]?.name === nextStudentRole) {
+                    studentIdx = i;
+                    break;
+                }
+            }
+            
+            if (studentIdx === -1) {
+                console.error(`Student ${nextStudentRole} not found in students array`);
+                return;
+            }
+            
+            // 대화 요청 (마지막 발언에 대해 학생이 응답)
+            const response = await chat([
+                ...messageBox[studentIdx],
+                {
+                    role: 'user',
+                    content: `${nextStudentRole} should continue the conversation, responding to what was just said. Write a natural response as ${nextStudentRole} without including "${nextStudentRole}:" at the beginning.`
+                }
+            ]);
+            
+            if (response) {
+                // 학생 메시지 생성 및 추가
+                const studentMessage: Conversation = {
+                    role: nextStudentRole,
+                    content: response
+                };
+                const newConversations = [...conversation, studentMessage];
+                
+                // 메시지박스 업데이트 (다른 학생들의 메시지박스에 이 응답 추가)
+                const studentMsg = {
+                    role: 'assistant',
+                    content: `${nextStudentRole}: ${response}`
+                } as Message;
+                
+                // 모든 학생의 메시지박스 업데이트
+                for (let j = 0; j < students.length; j++) {
+                    if (studentIdx !== j) { // 자기 자신 제외
+                        updateMessageBox(j, [...messageBox[j], studentMsg]);
+                    }
+                }
+                
+                // 전체 대화 업데이트
+                initializeConversation(newConversations);
+                await updateConversationDatabase(newConversations);
+            }
+        } catch (error) {
+            console.error('Error in advanceStudentConversation:', error);
+        } finally {
+            setAreStudentsResponding(false);
+        }
+    };
+
     return (
         <div style={{ overflow: 'auto', display: 'flex', width: '100%', height: '100%' }}>
         <div id="chat" className='Students' style={{ width: '50%' }}>
@@ -593,17 +680,30 @@ const Students = () => {
                             })
                         }
                         <p ref={messagesEndRef} />
-                        <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginBottom: '0%' }}>
                             <button 
                                 className="chat-button" 
-                                onClick={forceVerifyAllLabels}
+                                onClick={advanceStudentConversation}
+                                disabled={areStudentsResponding}
+                                title="Fast forward to next student responses"
+                                style={{ backgroundColor: '#f5f5f5', width: '100%', display: 'flex', justifyContent: 'center' }}
                             >
-                                Done Labeling
+                                <LuFastForward size={20} />
                             </button>
-                            <button className="chat-button" onClick={advanceDiagram}>Diagram</button>
+                            <div style={{ display: 'flex', gap: '5px', width: '100%', justifyContent: 'center', marginBottom: '0%' }}>
+
+                                <button 
+                                    className="chat-button" 
+                                    onClick={forceVerifyAllLabels}
+                                    style={{ backgroundColor: '#f5f5f5' }}
+                                >
+                                    Done Labeling
+                                </button>
+                                <button className="chat-button" onClick={advanceDiagram} style={{ backgroundColor: '#f5f5f5' }}>Generate Diagram</button>
+                            </div>
                         </div>
                     </div>
-                    <div style={{ overflow: 'auto', display: 'flex', flexDirection: 'column', height: topHeight === '70%' ? '30%' : '70%' }}>
+                    <div style={{ overflow: 'flex', display: 'flex', flexDirection: 'column', height: topHeight === '70%' ? '30%' : '70%' }}>
                         <div style={{ borderTop: '2px solid #ccc', backgroundColor: '#fff' }}>
                             {areStudentsResponding && <div className="chat-input" style={{ textAlign: 'center', padding: '6px' }}>Students are responding...</div>}
                         </div>

@@ -32,7 +32,7 @@ const Display: React.FC<DisplayProps> = ({ sceIndex, problemIndex }) => {
       {/* Left Side */}
       <div style={{ height: '100%', overflow: 'auto', margin: 10, padding: 0 }}>
         {/* General Scenario */}
-        <div style={{ fontWeight: 'bold', backgroundColor: 'rgba(247, 221, 231, 0.66)', padding: '8px 0' }}>
+        <div style={{ fontWeight: 'bold', backgroundColor: '#e8f5e9', padding: '8px 0' }}>
           General Scenario:
         </div>
         <p style={{ padding: '0 8px', textAlign: 'left' }}>
@@ -40,7 +40,7 @@ const Display: React.FC<DisplayProps> = ({ sceIndex, problemIndex }) => {
         </p>
         
         {/* The Problem */}
-        <div style={{ fontWeight: 'bold', backgroundColor: 'rgba(247, 221, 231, 0.66)', padding: '8px 0' }}>
+        <div style={{ fontWeight: 'bold', backgroundColor: '#e8f5e9', padding: '8px 0' }}>
           Math Problem:
         </div>
         <p style={{ padding: '0 8px', textAlign: 'left' }}>
@@ -48,7 +48,7 @@ const Display: React.FC<DisplayProps> = ({ sceIndex, problemIndex }) => {
         </p>
 
         {/* Student Information */}
-        <div style={{ fontWeight: 'bold', backgroundColor: 'rgba(247, 221, 231, 0.66)', padding: '8px 0' }}>
+        <div style={{ fontWeight: 'bold', backgroundColor: '#e8f5e9', padding: '8px 0' }}>
           Student Information:
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px 8px' }}>

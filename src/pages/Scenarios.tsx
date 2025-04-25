@@ -95,7 +95,7 @@ function Scenarios() {
         style={{
           width: '100%',
           height: '3%',
-          backgroundColor: '#FADFEE',
+          backgroundColor: '#e8f5e9',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -104,7 +104,7 @@ function Scenarios() {
         }}
       >
         <MdSchool size={28} />
-        <h1></h1>
+        <h1>SystemName</h1>
       </nav>
       <div className='Body-container'>
         <Display sceIndex={scenarioIndex} problemIndex={problemIndex} />

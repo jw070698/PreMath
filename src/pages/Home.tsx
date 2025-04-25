@@ -129,12 +129,12 @@ const Home = () => {
         justifyContent: 'center',
         alignItems: 'center',
         fontSize: '1rem',
-        backgroundColor: '#FADFEE',
+        backgroundColor: '#e8f5e9',
         padding: '0 16px',
         borderRadius: '8px',
       }}>
         <MdSchool size={32} />
-        <h1>Tutor Training</h1>
+        <h1>Pre-Service Math Teacher Training</h1>
       </div>
       <div style={{ display: 'flex', maxWidth: '50%', height: '70%' }}>
         {!readGuidance ?

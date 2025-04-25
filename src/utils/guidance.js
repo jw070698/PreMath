@@ -1,5 +1,5 @@
 export const guidance = `
-**Welcome to TutorUp!This is a tutor training system through scenario simulation for dealing with students online-learning disengagement problems. You are giving a lecture to the students and trying to engage them. Here's how you can make the most of this system:**
+**Welcome to {system-name}!This is a tutor training system through scenario simulation for dealing with students online-learning disengagement problems. You are giving a lecture to the students and trying to engage them. Here's how you can make the most of this system:**
 
 1. **Your Goal**: Chat with a simulated student to help them stay engaged during online learning, especially while discussing a math problem.
 2. **Before You Start**: Take a look at the details on the left side: Scenario Theme, Math Problem and Info about the student.
@@ -40,19 +40,18 @@ We will present you with a scenario about student disengagement in online learni
 `
 
 export const userStudyGuidance = `
-### Welcome to Our Tutor Training System
-During this session, you will undergo training with **two different systems**, both designed to address the issue of **student disengagement in online learning**.
+### Welcome to Pre-Service Math Teacher Training System
+During this session, you will try **two different systems**, both designed to address the issue of **student disengagement in online learning**.
 #### Training Overview
-- **Two Training Systems**: 
+- **Two Systems**: 
   - Each system focuses on addressing student disengagement.
-- **Feedback**:
   - You will receive feedback during each system's training.
   - **Objective**: Learn and remember effective strategies to tackle disengagement.
-### Post-Training Process
+#### Post-Training Process
 1. **Test**:
    - After completing the training with each system, you will take a test to assess your understanding.
 2. **Feedback Inquiry**:
    - Following the test, we will ask for your thoughts and feedback on the specific training system.
 #### Final Evaluation
-- After completing both systems, we will ask you some **general questions** about your overall experience.
+- After completing both systems, we will ask you some **questions** about your overall experience.
 `

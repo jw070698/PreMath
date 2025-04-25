@@ -29,6 +29,8 @@ interface ShapeConfig {
 const Diagram: React.FC<DiagramProps> = ({ step }) => {
   useEffect(() => {
     console.log("Diagram step:", step);
+    // Allow re-fetching diagram data on new step
+    didFetchDiagramData.current = false;
   }, [step]);
   const conversation = studentStore(state => state.conversation);
   const dropdownData = studentStore(state => state.dropdownData);
@@ -299,31 +301,43 @@ const Diagram: React.FC<DiagramProps> = ({ step }) => {
                     stroke={shape.id === selectedId ? 'blue' : undefined}
                   />
                 );
-              case 'rectWithText':
+              case 'rectWithText': {
+                // Only render if the dropdown selection for this student is not 'none'
+                if (shape.studentName && dropdownData[shape.studentName]?.toLowerCase() === 'none') {
+                  return null;
+                }
+                // Render the label type and the conversation text returned by the API
+                const labelType = shape.text ?? '';
+                const conversationText = shape.studentConversation ?? '';
                 return (
-                  <Group
-                    key={shape.id}
-                    x={shape.x}
-                    y={shape.y}
-                    draggable={shape.draggable}
-                    onClick={(e) => handleSelect(e, shape.id)}
-                    onDragEnd={(e) => handleDragEnd(e, shape.id)}
-                  >
-                    <Rect
-                      width={shape.width}
-                      height={shape.height}
-                      fill={shape.fill}
-                      stroke={shape.id === selectedId ? 'blue' : undefined}
-                    />
-                    <Text
-                      text={shape.text + (shape.studentName ? ` (${shape.studentName})` : '') + (shape.studentConversation ? `\n${shape.studentConversation}` : "")}
-                      fill="#000"
-                      fontSize={shape.fontSize || 16}
-                      x={10} 
-                      y={10}
-                    />
-                  </Group>
+                   <Group
+                     key={shape.id}
+                     x={shape.x}
+                     y={shape.y}
+                     draggable={shape.draggable}
+                     onClick={(e) => handleSelect(e, shape.id)}
+                     onDragEnd={(e) => handleDragEnd(e, shape.id)}
+                   >
+                     <Rect
+                       width={shape.width}
+                       height={shape.height}
+                       fill={shape.fill}
+                       stroke={shape.id === selectedId ? 'blue' : undefined}
+                     />
+                     <Text
+                       // Show the label type and conversation text
+                       text={`${labelType}${shape.studentName ? ` (${shape.studentName})` : ''}\n${conversationText}`}
+                       fill="#000"
+                       fontSize={shape.fontSize || 14}
+                       x={10}
+                       y={10}
+                       width={(shape.width || 150) - 20}
+                       wrap="word"
+                       align="center"
+                     />
+                   </Group>
                 );
+              }
               case 'circle':
                 return (
                   <Circle
