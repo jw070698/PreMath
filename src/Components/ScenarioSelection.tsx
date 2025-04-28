@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getStudentInitPrompt, STRUCTURED_FEEDBACK_PROMPT, } from '../utils/prompt';
+import { getStudentInitPrompt, STRUCTURED_FEEDBACK_PROMPT, problems, getInitialTutorDialogue } from '../utils/prompt';
 import { studentStore } from '../stores/studentStore';
 import './ScenarioSelection.css';
 import UserInput from './UserInput';
@@ -7,6 +7,7 @@ import { Message, Conversation, StudentInfo } from '../utils/type'
 import { chat } from '../utils/aiRequest';
 import { Mapping } from '../utils/mapping';
 import { useNavigate } from "react-router-dom";
+
 const ScenarioSelection = () => {
     const navigate = useNavigate();
     const { setTutorUpSecenario, participantId, setCurrentSystem, tutorUpSecenario, changeScenario, overallStrategies, instantStrategies, setOverallStrategies, setInstantStrategies, latestMessage, updateStudents, scenarioIndex, updeateMessageDatabase, updateConversationDatabase, updateLatestMessage, initializeMessageBox, initializeConversation, updateConversation, updateMessageBox, studentInfo, conversation, messageBox } = studentStore(state => ({
@@ -36,30 +37,58 @@ const ScenarioSelection = () => {
     }));
     const scenarioDatabase = [0, 1, 2, 3]
     const addLatestToMessageBox = (idx: number) => {
-        const stuIdx = idx % 3;
-        let stu1 = stuIdx == 0 ? 1 : 0;
-        let stu2 = stuIdx == 2 ? 1 : 2;
-        // stu1 = stu1 + scenarioIndex * 3;
-        // stu2 = stu2 + scenarioIndex * 3;
-        const stu1Message = {
-            role: 'user',
-            content: `${latestMessage[stu1].content}`
-        };
-        const stu2Message = {
-            role: 'user',
-            content: ` ${latestMessage[stu2].content}`
-        };
-        const agentMessage = {
-            role: 'assistant',
-            content: ` ${latestMessage[stuIdx].content}`
-        };
-        const tutorMessage = {
-            role: 'user',
-            content: ` ${prompt}`
-        };
-        const updatedMessages = [...messageBox[stuIdx], stu1Message, stu2Message, agentMessage, tutorMessage] as Message[];
-        updateMessageBox(stuIdx, updatedMessages);
+        try {
+            // 시나리오 전환 시 기존 대화 내용 초기화
+            initializeMessageBox([], []);
+            initializeConversation([]);
+        } catch (error) {
+            console.error('Error resetting conversation:', error);
+        }
     }
+
+    const InitializeScenario = async (scenarioIdx: number) => {
+        const problemIndex = Mapping[participantId - 1].tutraining[tutorUpSecenario].problem - 1;
+        const initialTutorDialogue = getInitialTutorDialogue(problemIndex);
+        const initialTutorMessage = {
+            role: 'user',
+            content: 'Teacher: ' + initialTutorDialogue
+        } as Message;
+        const initialTutorConversation = {
+            role: 'tutor',
+            content: initialTutorDialogue
+        }
+        
+        // initialize the conversation for each student
+        const students = tutorUpSecenario === 0 ? [7, 8] : [1, 2];
+        const initialMessages = students.map((studentId) => {
+            return {
+                role: 'user' as const,
+                content: `${studentInfo[studentId].name}: ${studentInfo[studentId].initialDialogue}`
+            }
+        });
+        const initialConversations = students.map((studentId) => ({
+            role: studentInfo[studentId].name,
+            content: studentInfo[studentId].initialDialogue
+        }));
+        const initialPrompts = students.map((studentId) => ({
+            role: 'system' as const,
+            content: getStudentInitPrompt(studentInfo[studentId].name, studentInfo[studentId].personals, problems[problemIndex])
+        }));
+        const initialSelfMessages = students.map((studentId) => {
+            return {
+                role: 'assistant' as const,
+                content: studentInfo[studentId].initialDialogue
+            }
+        });
+
+        // Initialize message box and conversation
+        initializeMessageBox(
+            [initialPrompts[0], initialTutorMessage, initialSelfMessages[0], initialMessages[1]],
+            [initialPrompts[1], initialTutorMessage, initialMessages[0], initialSelfMessages[1]]
+        );
+        initializeConversation([initialTutorConversation, initialConversations[0], initialConversations[1]]);
+    }
+
     const onClickScenario = (idx: number) => {
         const currentScenario = Mapping[participantId - 1].tutraining[tutorUpSecenario].scenario - 1
         const mappingIndex = Mapping[participantId - 1].tutraining[idx].scenario - 1
@@ -69,13 +98,10 @@ const ScenarioSelection = () => {
         console.log('mappingIndex', mappingIndex);
         changeScenario(mappingIndex);
         setTutorUpSecenario(idx);
-        updateStudents(mappingIndex);
-        addLatestToMessageBox(currentScenario);
-        updeateMessageDatabase(currentScenario);
-        updateConversationDatabase(currentScenario);
-
-
-
+        const students = idx === 0 ? [7, 8] : [1, 2];
+        studentStore.setState({ students });
+        // 새 시나리오 초기화
+        InitializeScenario(mappingIndex);
     }
     
     return (

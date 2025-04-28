@@ -13,6 +13,7 @@ import { db } from '../backend/firebase';
 import { RiExpandDiagonalLine, RiCollapseDiagonalLine } from 'react-icons/ri';
 import Diagram from './Diagram';
 import { LuFastForward } from 'react-icons/lu';
+import { getFirestore, doc, setDoc, collection, addDoc, updateDoc, increment } from 'firebase/firestore';
 
 const Students = () => {
     const { descriptionOfStudents, updateStudents, participantId, tutorUpSecenario, setDescriptionOfStudents, instantStrategies, setInstantStrategies, overallStrategies, setOverallStrategies, conversationDatabase, students, loadLog, scenarioIndex, initializeMessageBox, initializeConversation, updateConversation, updateMessageBox, studentInfo, conversation, messageBox, hasScenarioStarted, setHasScenarioStarted, setSelectedDropdownOption, setSelectedStudentName }
@@ -272,10 +273,11 @@ const Students = () => {
     }
 
     useEffect(() => {
-
         const currentScenario = Mapping[participantId - 1].tutraining[tutorUpSecenario].scenario - 1
         // console.log('tutorUpSecenario:', participantId, tutorUpSecenario, currentScenario);
-        updateStudents(currentScenario);
+        // 시나리오별로 다른 학생 인덱스 설정
+        const students = tutorUpSecenario === 0 ? [7, 8] : [1, 2];
+        studentStore.setState({ students });
         setInstantStrategy(instantStrategies[currentScenario]);
         setOverallFeedback(overallStrategies[currentScenario]);
         setDescription(descriptionOfStudents[currentScenario]);
@@ -284,8 +286,6 @@ const Students = () => {
         } else {
             InitializeScenario();
         }
-        updateStudents(currentScenario);
-
     }, [tutorUpSecenario])
     useEffect(() => {
         const currentScenario = Mapping[participantId - 1].tutraining[0].scenario - 1
@@ -424,26 +424,133 @@ const Students = () => {
         }
     };
     const updateConversationDatabase = async (conv: Conversation[]) => {
-        const conversationRef = ref(db, `user/${participantId}/tutorupTraining/scenario${tutorUpSecenario + 1}/conversation`);
-
+        // Firestore reference
+        const firestore = getFirestore();
+        const userDocRef = doc(firestore, "users", participantId.toString());
+        const scenarioDocRef = doc(userDocRef, "tutorupTraining", `scenario${tutorUpSecenario + 1}`);
 
         try {
-            // 读取现有的 conversation 数组
-            const snapshot = await get(conversationRef);
-            let existingConversations: Conversation[] = snapshot.val() || [];
-            console.log('existingConversations:', existingConversations);
-            if (Array.isArray(existingConversations)) {
-                const updatedConversations = [...existingConversations, ...conv].filter(item => item !== undefined);
-                await set(conversationRef, updatedConversations);
-                console.log('Conversations added successfully');
-            } else {
-                await set(conversationRef, conv.filter(item => item !== undefined));
-                console.log('Initialised conversations successfully');
-            }
+            // 대화 데이터 저장
+            await setDoc(scenarioDocRef, {
+                conversation: conv.filter(item => item !== undefined),
+                timestamp: new Date(),
+            }, { merge: true });
+            console.log('Conversations saved to Firestore successfully');
         } catch (error) {
             console.error('Error updating conversations:', error);
         }
-    }
+    };
+    const updateFastForwardCount = async () => {
+        const firestore = getFirestore();
+        const userDocRef = doc(firestore, "users", participantId.toString());
+        const scenarioDocRef = doc(userDocRef, "tutorupTraining", `scenario${tutorUpSecenario + 1}`);
+        
+        try {
+            await updateDoc(scenarioDocRef, {
+                fastForwardCount: increment(1)
+            });
+            console.log('FastForward count updated successfully');
+        } catch (error) {
+            console.error('Error updating FastForward count:', error);
+        }
+    };
+    const advanceStudentConversation = async () => {
+        if (areStudentsResponding) {
+            return;
+        }
+        
+        setAreStudentsResponding(true);
+        
+        try {
+            // FastForward 버튼 클릭 횟수 증가
+            await updateFastForwardCount();
+
+            // 현재 대화에 참여 중인 학생들만 찾아서 응답하게 합니다
+            // 가장 최근 메시지의 발신자 파악
+            let lastSpeaker = "";
+            if (conversation.length > 0) {
+                lastSpeaker = conversation[conversation.length - 1].role;
+            }
+            
+            // 이미 대화에 참여 중인 학생 역할 목록 추출
+            const activeStudentRoles = new Set<string>();
+            conversation.forEach(msg => {
+                if (msg.role !== 'tutor') {
+                    activeStudentRoles.add(msg.role);
+                }
+            });
+            
+            // 디버깅 정보 출력
+            console.log('Current students:', students);
+            console.log('Student info:', studentInfo);
+            console.log('Active student roles:', activeStudentRoles);
+            console.log('Last speaker:', lastSpeaker);
+            
+            // 마지막 발언자가 아닌 학생을 찾습니다
+            const nextStudentRoles = Array.from(activeStudentRoles).filter(role => role !== lastSpeaker);
+            if (nextStudentRoles.length === 0) return; // 대화할 다른 학생이 없는 경우
+            
+            const nextStudentRole = nextStudentRoles[0] as string; // 다음으로 대화할 학생
+            console.log('Next student role:', nextStudentRole);
+            
+            // students 배열에서 해당 학생의 인덱스 찾기
+            let studentIdx = -1;
+            for (let i = 0; i < students.length; i++) {
+                const currentStudent = studentInfo[students[i]];
+                console.log(`Checking student ${i}:`, currentStudent);
+                if (currentStudent && currentStudent.name === nextStudentRole) {
+                    studentIdx = i;
+                    break;
+                }
+            }
+            
+            if (studentIdx === -1) {
+                console.error(`Student ${nextStudentRole} not found in students array`);
+                // 첫 번째 가능한 학생을 선택
+                studentIdx = 0;
+            }
+            
+            // 대화 요청 (마지막 발언에 대해 학생이 응답)
+            const response = await chat([
+                ...messageBox[studentIdx],
+                {
+                    role: 'user',
+                    content: `${nextStudentRole} should continue the conversation, responding to what was just said. Write a natural response as ${nextStudentRole} without including "${nextStudentRole}:" at the beginning.`
+                }
+            ]);
+            
+            if (response) {
+                // 학생 메시지 생성 및 추가
+                const studentMessage: Conversation = {
+                    role: nextStudentRole,
+                    content: response
+                };
+                const newConversations = [...conversation, studentMessage];
+                
+                // 메시지박스 업데이트 (다른 학생들의 메시지박스에 이 응답 추가)
+                const studentMsg = {
+                    role: 'assistant',
+                    content: `${nextStudentRole}: ${response}`
+                } as Message;
+                
+                // 모든 학생의 메시지박스 업데이트
+                for (let j = 0; j < students.length; j++) {
+                    if (studentIdx !== j) { // 자기 자신 제외
+                        updateMessageBox(j, [...messageBox[j], studentMsg]);
+                    }
+                }
+                
+                // 전체 대화 업데이트
+                initializeConversation(newConversations);
+                await updateConversationDatabase(newConversations);
+            }
+        } catch (error) {
+            console.error('Error in advanceStudentConversation:', error);
+        } finally {
+            setAreStudentsResponding(false);
+        }
+    };
+
     const InitializeScenario = async () => {
         const problemIndex = Mapping[participantId - 1].tutraining[tutorUpSecenario].problem - 1
         const initialTutorDialogue = getInitialTutorDialogue(problemIndex);
@@ -456,12 +563,13 @@ const Students = () => {
             content: initialTutorDialogue
         }
         // initialize the conversation for each student
-        const students = [7, 8]  // 3 students
-        console.log('students:', students);
-        const initialMessages = students.map((_, idx) => createMessage(studentInfo[students[idx]]));
-        const initialConversations = students.map((_, idx) => createConversation(studentInfo[students[idx]]));
-        const initialPrompts = students.map((_, idx) => createInitialPrompt(studentInfo[students[idx]]));
-        const initialSelfMessages = students.map((_, idx) => createSelfMessage(studentInfo[students[idx]]));
+        // 시나리오별로 다른 학생 인덱스 사용
+        const currentStudents = tutorUpSecenario === 0 ? [7, 8] : [1, 2];
+        console.log('students:', currentStudents);
+        const initialMessages = currentStudents.map((studentId) => createMessage(studentInfo[studentId]));
+        const initialConversations = currentStudents.map((studentId) => createConversation(studentInfo[studentId]));
+        const initialPrompts = currentStudents.map((studentId) => createInitialPrompt(studentInfo[studentId]));
+        const initialSelfMessages = currentStudents.map((studentId) => createSelfMessage(studentInfo[studentId]));
         initializeMessageBox(
             [initialPrompts[0], initialTutorMessage, initialSelfMessages[0], initialMessages[1]],
             [initialPrompts[1], initialTutorMessage, initialMessages[0], initialSelfMessages[1]]
@@ -537,92 +645,6 @@ const Students = () => {
         }
     };
   
-    // 새로운 함수 추가: FastForward 버튼용 학생 대화 생성 함수
-    const advanceStudentConversation = async () => {
-        // 학생들이 응답 중인지 체크
-        if (areStudentsResponding) {
-            return;
-        }
-        
-        setAreStudentsResponding(true);
-        
-        try {
-            // 현재 대화에 참여 중인 학생들만 찾아서 응답하게 합니다
-            // 가장 최근 메시지의 발신자 파악
-            let lastSpeaker = "";
-            if (conversation.length > 0) {
-                lastSpeaker = conversation[conversation.length - 1].role;
-            }
-            
-            // 이미 대화에 참여 중인 학생 역할 목록 추출
-            const activeStudentRoles = new Set<string>();
-            conversation.forEach(msg => {
-                if (msg.role !== 'tutor') {
-                    activeStudentRoles.add(msg.role);
-                }
-            });
-            
-            // 마지막 발언자가 아닌 학생을 찾습니다
-            const nextStudentRoles = Array.from(activeStudentRoles).filter(role => role !== lastSpeaker);
-            if (nextStudentRoles.length === 0) return; // 대화할 다른 학생이 없는 경우
-            
-            const nextStudentRole = nextStudentRoles[0] as string; // 다음으로 대화할 학생
-            
-            // students 배열에서 해당 학생의 인덱스 찾기
-            let studentIdx = -1;
-            for (let i = 0; i < students.length; i++) {
-                if (studentInfo[students[i]]?.name === nextStudentRole) {
-                    studentIdx = i;
-                    break;
-                }
-            }
-            
-            if (studentIdx === -1) {
-                console.error(`Student ${nextStudentRole} not found in students array`);
-                return;
-            }
-            
-            // 대화 요청 (마지막 발언에 대해 학생이 응답)
-            const response = await chat([
-                ...messageBox[studentIdx],
-                {
-                    role: 'user',
-                    content: `${nextStudentRole} should continue the conversation, responding to what was just said. Write a natural response as ${nextStudentRole} without including "${nextStudentRole}:" at the beginning.`
-                }
-            ]);
-            
-            if (response) {
-                // 학생 메시지 생성 및 추가
-                const studentMessage: Conversation = {
-                    role: nextStudentRole,
-                    content: response
-                };
-                const newConversations = [...conversation, studentMessage];
-                
-                // 메시지박스 업데이트 (다른 학생들의 메시지박스에 이 응답 추가)
-                const studentMsg = {
-                    role: 'assistant',
-                    content: `${nextStudentRole}: ${response}`
-                } as Message;
-                
-                // 모든 학생의 메시지박스 업데이트
-                for (let j = 0; j < students.length; j++) {
-                    if (studentIdx !== j) { // 자기 자신 제외
-                        updateMessageBox(j, [...messageBox[j], studentMsg]);
-                    }
-                }
-                
-                // 전체 대화 업데이트
-                initializeConversation(newConversations);
-                await updateConversationDatabase(newConversations);
-            }
-        } catch (error) {
-            console.error('Error in advanceStudentConversation:', error);
-        } finally {
-            setAreStudentsResponding(false);
-        }
-    };
-
     return (
         <div style={{ overflow: 'auto', display: 'flex', width: '100%', height: '100%' }}>
         <div id="chat" className='Students' style={{ width: '50%' }}>
