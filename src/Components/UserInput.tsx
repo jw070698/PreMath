@@ -5,7 +5,8 @@ import { studentStore } from '../stores/studentStore';
 import { Conversation, TextLabel } from '../utils/type';
 import { db } from '../backend/firebase';
 import { onValue, ref, update } from 'firebase/database';
-import { chat } from '../utils/aiRequest';  // OpenAI API 호출을 위한 import
+import { chat } from '../utils/aiRequest';
+import { getFirestore, doc, arrayUnion, updateDoc, setDoc } from 'firebase/firestore';
 
 interface UserInputProps {
     prompt: string;
@@ -15,7 +16,8 @@ interface UserInputProps {
 }
 
 interface LabelWithVerification extends TextLabel {
-    isVerified?: boolean;
+    isVerified: boolean;
+    attempts: number;
 }
 
 const UserInput: React.FC<UserInputProps> = ({ prompt, user, index, onLabelAdd }) => {
@@ -109,11 +111,11 @@ const UserInput: React.FC<UserInputProps> = ({ prompt, user, index, onLabelAdd }
 
 Definitions:
 - Data: Facts or evidence supporting the claim
+- Data Claim: A partial claim based on data
 - Claim: The main argument or position being proven
 - Warrant: The reasoning that connects data to claim
 - Qualifier: Words that limit the scope of the claim
 - Rebuttal: Counter-arguments or exceptions to the claim
-- Data Claim: A partial claim based on data
 
 RESPOND ONLY WITH "true" or "false".`;
 
@@ -138,13 +140,33 @@ RESPOND ONLY WITH "true" or "false".`;
         if (selectedText) {
             console.log("Applying label:", labelType, "to text:", selectedText.text);
             
-            // For "none" label, set isVerified to true directly
+            // 기존에 같은 위치에 라벨이 있는지 확인
+            const existingIndex = labels.findIndex(
+                l => l.start === selectedText.start && l.end === selectedText.end
+            );
+            
+            // 현재 시도 횟수 계산
+            let currentAttempts = 1;
+            if (existingIndex !== -1) {
+                currentAttempts = (labels[existingIndex].attempts || 0) + 1;
+            }
+            
+            // 검증 상태 확인
             let isVerified = false;
             if (labelType.toLowerCase() === 'none') {
                 isVerified = true;
             } else {
-                // For other labels, verify through the AI
-                isVerified = await verifyLabel(selectedText.text, labelType);
+                // 이전에 맞춘 적이 있는지 확인
+                const wasVerifiedBefore = existingIndex !== -1 && labels[existingIndex].isVerified;
+                
+                // 현재 라벨이 이전과 동일한지 확인
+                const isSameLabel = existingIndex !== -1 && labels[existingIndex].label === labelType;
+                
+                // 현재 라벨 검증
+                const currentVerification = await verifyLabel(selectedText.text, labelType);
+                
+                // 이전에 맞췄거나 현재 맞춘 경우 true
+                isVerified = wasVerifiedBefore || currentVerification;
             }
             
             console.log(`Label "${labelType}" is verified:`, isVerified);
@@ -155,13 +177,9 @@ RESPOND ONLY WITH "true" or "false".`;
                 label: labelType,
                 start: selectedText.start,
                 end: selectedText.end,
-                isVerified
+                isVerified: isVerified,
+                attempts: currentAttempts
             };
-            
-            // 기존에 같은 위치에 라벨이 있는지 확인
-            const existingIndex = labels.findIndex(
-                l => l.start === selectedText.start && l.end === selectedText.end
-            );
             
             let updatedLabels: LabelWithVerification[];
             if (existingIndex !== -1) {
@@ -177,28 +195,65 @@ RESPOND ONLY WITH "true" or "false".`;
             setLabels(updatedLabels);
             console.log("Updated labels:", updatedLabels);
             
+            try {
+                const firestore = getFirestore();
+                const userDocRef = doc(firestore, "users", participantId.toString());
+                const scenarioDocRef = doc(userDocRef, "tutorupTraining", `scenario${tutorUpSecenario + 1}`);
+
+                // 현재 메시지 찾기
+                const currentMessageIndex = conversation.findIndex(
+                    msg => msg.content === prompt && msg.role === user.toLowerCase()
+                );
+
+                if (currentMessageIndex !== -1) {
+                    // 현재 메시지의 labels 배열 업데이트
+                    const updatedConversation = [...conversation];
+                    const currentMessage = updatedConversation[currentMessageIndex];
+                    
+                    if (!currentMessage.labels) {
+                        currentMessage.labels = [];
+                    }
+
+                    // 기존 라벨 찾기
+                    const existingLabelIndex = currentMessage.labels.findIndex(
+                        (l) => l.start === selectedText.start && l.end === selectedText.end
+                    );
+
+                    // 현재 메시지의 labels 업데이트
+                    if (existingLabelIndex !== -1) {
+                        currentMessage.labels[existingLabelIndex] = newLabel;
+                    } else {
+                        currentMessage.labels.push(newLabel);
+                    }
+
+                    // Firestore에 저장
+                    await setDoc(scenarioDocRef, {
+                        conversation: {
+                            [currentMessageIndex]: {
+                                content: prompt,
+                                role: user.toLowerCase(),
+                                labels: currentMessage.labels.map(label => ({
+                                    ...label,
+                                    isVerified: label.start === selectedText.start && 
+                                              label.end === selectedText.end ? 
+                                              isVerified : label.isVerified
+                                }))
+                            }
+                        }
+                    }, { merge: true });
+
+                    // 로컬 상태 업데이트
+                    updateConversation(currentMessage);
+                }
+                console.log("Label data saved to Firestore");
+            } catch (error) {
+                console.error("Error saving label data to Firestore:", error);
+            }
+            
             // 전역 상태 업데이트 (conversation)
             if (onLabelAdd) {
                 console.log("Passing label to parent component");
                 onLabelAdd(newLabel);
-                
-                // Additional step to force parent components to recognize the verification
-                if (labelType.toLowerCase() === 'none') {
-                    // Use a small timeout to ensure the UI updates properly
-                    setTimeout(() => {
-                        const forcedVerifiedLabel = {
-                            ...newLabel,
-                            isVerified: true
-                        };
-                        onLabelAdd(forcedVerifiedLabel);
-                    }, 50);
-                }
-                
-                // 강제로 UI 업데이트 트리거
-                setTimeout(() => {
-                    // 미세한 상태 변경으로 리렌더링 촉발
-                    setLabels([...updatedLabels]);
-                }, 100);
             }
             
             // Diagram 렌더링을 위한 값 설정
@@ -282,20 +337,18 @@ RESPOND ONLY WITH "true" or "false".`;
                         {prompt.slice(labelStart, labelEnd)}
                         <span style={{
                             position: 'absolute',
-                            top: '-8px',
-                            right: '-8px',
+                            top: '-20px',
+                            right: '0',
                             backgroundColor: label.isVerified ? '#4CAF50' : '#f44336',
                             color: 'white',
-                            borderRadius: '50%',
-                            width: '16px',
-                            height: '16px',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
+                            padding: '2px 6px',
+                            borderRadius: '4px',
                             fontSize: '10px',
-                            fontWeight: 'bold'
+                            fontWeight: 'bold',
+                            whiteSpace: 'nowrap',
+                            zIndex: 1
                         }}>
-                            {label.isVerified ? '✓' : '✗'}
+                            {label.label} {label.isVerified ? '✓' : '✗'}
                         </span>
                     </span>
                 );
@@ -317,30 +370,12 @@ RESPOND ONLY WITH "true" or "false".`;
     };
 
     const getLabelColor = (label: string, isVerified?: boolean) => {
-        const baseColors: { [key: string]: string } = {
-            data: '#e3f2fd',
-            dataclaim: '#e8f5e9',
-            claim: '#f3e5f5',
-            warrant: '#fff3e0',
-            qualifier: '#fce4ec',
-            rebuttal: '#f5f5f5',
-            none: '#e0e0e0'  // Add specific color for "none" label
-        };
-
-        // Get the base color or fallback to light gray
-        const color = baseColors[label.toLowerCase()] || '#f5f5f5';
-        
-        // If verified, make the color slightly more saturated
+        // 검증 결과에 따라 배경색 결정
         if (isVerified) {
-            // For "none" label, use a light green when verified
-            if (label.toLowerCase() === 'none') {
-                return '#c8e6c9';  // Light green color for verified "none" labels
-            }
-            // For other labels, keep their color but with higher saturation
-            return color;
+            return '#e8f5e9';  // 연한 초록색 (맞을 때)
+        } else {
+            return '#fce4ec';  // 연한 핑크색 (틀릴 때)
         }
-        
-        return color;
     };
 
     if (user === 'system') {
