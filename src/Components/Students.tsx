@@ -13,7 +13,7 @@ import { db } from '../backend/firebase';
 import { RiExpandDiagonalLine, RiCollapseDiagonalLine } from 'react-icons/ri';
 import Diagram from './Diagram';
 import { LuFastForward } from 'react-icons/lu';
-import { getFirestore, doc, setDoc, collection, addDoc, updateDoc, increment } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, collection, addDoc, updateDoc, increment, getDoc } from 'firebase/firestore';
 
 const Students = () => {
     const { descriptionOfStudents, updateStudents, participantId, tutorUpSecenario, setDescriptionOfStudents, instantStrategies, setInstantStrategies, overallStrategies, setOverallStrategies, conversationDatabase, students, loadLog, scenarioIndex, initializeMessageBox, initializeConversation, updateConversation, updateMessageBox, studentInfo, conversation, messageBox, hasScenarioStarted, setHasScenarioStarted, setSelectedDropdownOption, setSelectedStudentName }
@@ -287,6 +287,7 @@ const Students = () => {
             InitializeScenario();
         }
     }, [tutorUpSecenario])
+
     useEffect(() => {
         const currentScenario = Mapping[participantId - 1].tutraining[0].scenario - 1
         InitializeScenario();
@@ -351,7 +352,8 @@ const Students = () => {
 
 
         await Promise.resolve(updateConversation({
-            role: 'tutor', content: prompt
+            role: 'teacher',
+            content: prompt
         }));
 
         var messageBoxNow = studentStore.getState().messageBox;
@@ -389,7 +391,7 @@ const Students = () => {
         try {
             // 교사의 메시지 추가
             const tutorMessage: Conversation = {
-                role: 'tutor',
+                role: 'teacher',
                 content: prompt
             };
             
@@ -430,7 +432,7 @@ const Students = () => {
         const scenarioDocRef = doc(userDocRef, "tutorupTraining", `scenario${tutorUpSecenario + 1}`);
 
         try {
-            // 대화 데이터 저장
+            // 대화 데이터를 Firestore에만 저장
             await setDoc(scenarioDocRef, {
                 conversation: conv.filter(item => item !== undefined),
                 timestamp: new Date(),
@@ -475,7 +477,7 @@ const Students = () => {
             // 이미 대화에 참여 중인 학생 역할 목록 추출
             const activeStudentRoles = new Set<string>();
             conversation.forEach(msg => {
-                if (msg.role !== 'tutor') {
+                if (msg.role !== 'teacher') {
                     activeStudentRoles.add(msg.role);
                 }
             });
@@ -559,7 +561,7 @@ const Students = () => {
             content: 'Teacher: ' + initialTutorDialogue
         } as Message;
         const initialTutorConversation = {
-            role: 'tutor',
+            role: 'teacher',
             content: initialTutorDialogue
         }
         // initialize the conversation for each student
@@ -585,8 +587,46 @@ const Students = () => {
         const updatedMessageBox = studentStore.getState().messageBox;
     }
 
+    const updateResetCount = async () => {
+        const firestore = getFirestore();
+        const userDocRef = doc(firestore, "users", participantId.toString());
+        const scenarioDocRef = doc(userDocRef, "tutorupTraining", `scenario${tutorUpSecenario + 1}`);
+        
+        try {
+            await updateDoc(scenarioDocRef, {
+                resetCount: increment(1)
+            });
+            console.log('Reset count updated successfully');
+        } catch (error) {
+            console.error('Error updating reset count:', error);
+        }
+    };
+
+    const updateRefreshCount = async () => {
+        const firestore = getFirestore();
+        const userDocRef = doc(firestore, "users", participantId.toString());
+        const scenarioDocRef = doc(userDocRef, "tutorupTraining", `scenario${tutorUpSecenario + 1}`);
+        
+        try {
+            await updateDoc(scenarioDocRef, {
+                refreshCount: increment(1)
+            });
+            console.log('Refresh count updated successfully');
+        } catch (error) {
+            console.error('Error updating refresh count:', error);
+        }
+    };
+
+    // 컴포넌트가 처음 마운트될 때 새로고침 횟수 증가
+    useEffect(() => {
+        updateRefreshCount();
+    }, []);
+
     const resetWholeDialogue = async (e: React.FormEvent) => {
-        // get current reset count and update the reset count
+        // Firestore에 reset 횟수 증가
+        await updateResetCount();
+
+        // 기존의 realtime database 업데이트 (이전 코드 유지)
         const userRef = ref(db, `user/${participantId}`);
         let currentResetBtnCount = 0;
         onValue(userRef, (snapshot) => {
@@ -608,9 +648,45 @@ const Students = () => {
             console.error('Error updating reset button count:', error);
         });
 
-        InitializeScenario();
+        // 대화 초기화
+        await InitializeScenario();
     };
-    // console.log('students: ', students)
+
+    useEffect(() => {
+        const loadConversationFromFirestore = async () => {
+            try {
+                const firestore = getFirestore();
+                const userDocRef = doc(firestore, "users", participantId.toString());
+                const scenarioDocRef = doc(userDocRef, "tutorupTraining", `scenario${tutorUpSecenario + 1}`);
+                
+                const docSnap = await getDoc(scenarioDocRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (data.conversation && data.conversation.length > 0) {
+                        // 저장된 대화가 있으면 복원
+                        initializeConversation(data.conversation);
+                        if (data.messageBox) {
+                            initializeMessageBox(data.messageBox[0], data.messageBox[1]);
+                        }
+                        if (data.students) {
+                            studentStore.setState({ students: data.students });
+                        }
+                    } else {
+                        // 저장된 대화가 없으면 새로 초기화
+                        InitializeScenario();
+                    }
+                } else {
+                    // 문서가 없으면 새로 초기화
+                    InitializeScenario();
+                }
+            } catch (error) {
+                console.error('Error loading conversation from Firestore:', error);
+                InitializeScenario();
+            }
+        };
+
+        loadConversationFromFirestore();
+    }, [tutorUpSecenario]);
 
     const handleDropdownChange = async (e: React.ChangeEvent<HTMLSelectElement>, studentRole: string, studentMessage: string) => {
         const selectedOption = e.target.value;

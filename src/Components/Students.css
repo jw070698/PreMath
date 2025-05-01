@@ -31,12 +31,37 @@
   margin: 1px 0;  /* 메시지 그룹 간의 간격 */
   position: relative;
 }
-.message-wrapper.teacher .message-content {
+.message-wrapper.tutor .message-content {
   position: relative;
-  /* bump the text down so we have room for the label inside */
   padding: 24px 16px 12px; 
 }
 
+.tutor .sender-name {
+  right: 0;
+}
+
+.tutor .message-bubble {
+  background-color: #e8f5e9 !important;
+  border-radius: 20px;
+  border-top-right-radius: 4px;
+  margin-left: auto;
+}
+
+.tutor .message-content {
+  background-color: #e4e6eb;
+  float: right;
+  border-bottom-right-radius: 4px;
+  margin-left: auto;
+}
+
+.tutor .message-content::before {
+  content: 'Teacher';
+  position: right;
+  top: -20px;
+  right: 0;
+  font-size: 12px;
+  color: #666;
+}
 
 .sender-name {
   position: absolute;
@@ -72,7 +97,7 @@
   font-size: 14px;
   line-height: 1.4;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-  margin-top: 16px;  /* 이름과의 간격 줄임 (20px에서 16px로) */
+  margin-top: 16px;
 }
 
 .input-container {
@@ -198,7 +223,6 @@
   float: left;
   border-bottom-left-radius: 4px;
   text-align: left;
-  /*margin-right: auto;*/
 }
 
 .student .message-content::before {

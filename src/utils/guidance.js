@@ -43,10 +43,9 @@ export const userStudyGuidance = `
 ### Welcome to Pre-Service Math Teacher Training System
 During this session, you will try **two different systems**, both designed to address the issue of **student disengagement in online learning**.
 #### Training Overview
-- **Two Systems**: 
-  - Each system focuses on addressing student disengagement.
-  - You will receive feedback during each system's training.
-  - **Objective**: Learn and remember effective strategies to tackle disengagement.
+- Each system focuses on addressing student disengagement.
+- You will receive feedback during each system's training.
+- **Objective**: Learn and remember effective strategies to tackle disengagement.
 #### Post-Training Process
 1. **Test**:
    - After completing the training with each system, you will take a test to assess your understanding.

@@ -153,7 +153,12 @@ export const studentStore = create<StudentStoreState>((set, get) => ({
       };
     }),
   updateStudents: (idx: number) =>
-    set((state) => ({ students: [idx * 3 + 1, idx * 3 + 2] })),
+    set((state) => {
+      // 시나리오 1(tutorUpSecenario === 0)에서는 학생 [7, 8]을 사용
+      // 시나리오 2(tutorUpSecenario === 1)에서는 학생 [1, 2]를 사용
+      const students = state.tutorUpSecenario === 0 ? [7, 8] : [1, 2];
+      return { students };
+    }),
   /*updateStudents: (idx: number) =>
     set((state) => ({ students: [idx * 3 + 0, idx * 3 + 1, idx * 3 + 2] })),*/
   changeScenario: (idx: number) => set((state) => ({ scenarioIndex: idx })),

@@ -383,38 +383,38 @@ RESPOND ONLY WITH "true" or "false".`;
             });
         }
     }
-    const role = user == 'tutor' ? 'teacher' : 'student';
+    const role = user.toLowerCase() === 'teacher' ? 'teacher' : 'student';
     return (
         <div className={`message-wrapper ${role}`} style={{ width: '100%' }}>
             <div className={`${user.toLowerCase()}`} style={{
                 display: 'flex',
-                justifyContent: user.toLowerCase() === 'tutor' ? 'flex-end' : 'flex-start',
+                justifyContent: user.toLowerCase() === 'teacher' ? 'flex-end' : 'flex-start',
                 width: '100%'
             }}>
                 <div className="sender-name" style={{
                     position: 'absolute',
                     top: '-16px',
-                    [user.toLowerCase() === 'tutor' ? 'right' : 'left']: 0,
+                    [user.toLowerCase() === 'teacher' ? 'right' : 'left']: 0,
                     fontSize: '14px',
                     color: '#666'
                 }}>
-                    {user.toLowerCase() === 'tutor' ? 'Teacher' : user}
+                    {user.toLowerCase() === 'teacher' ? 'Teacher' : user}
                 </div>
                 <div 
                     className="message-bubble"
                     onMouseUp={handleSelection}
                     ref={messageRef}
                     style={{
-                        backgroundColor: user.toLowerCase() === 'tutor' ? '#e8f5e9' : '#c6d9f8',
+                        backgroundColor: user.toLowerCase() === 'teacher' ? '#e8f5e9' : '#c6d9f8',
                         borderRadius: '20px',
-                        borderTopLeftRadius: user.toLowerCase() === 'tutor' ? '20px' : '4px',
-                        borderTopRightRadius: user.toLowerCase() === 'tutor' ? '4px' : '20px',
+                        borderTopLeftRadius: user.toLowerCase() === 'teacher' ? '20px' : '4px',
+                        borderTopRightRadius: user.toLowerCase() === 'teacher' ? '4px' : '20px',
                         padding: '12px 16px',
                         fontSize: '14px',
                         lineHeight: 1.4,
                         boxShadow: '0 1px 1px rgba(0, 0, 0, 0.1)',
                         marginTop: '16px',
-                        [user.toLowerCase() === 'tutor' ? 'marginLeft' : 'marginRight']: '30%',
+                        [user.toLowerCase() === 'teacher' ? 'marginLeft' : 'marginRight']: '30%',
                         maxWidth: '70%',
                         textAlign: 'left'
                     }}

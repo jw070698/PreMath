@@ -175,12 +175,12 @@ const TestSimulation = () => {
 
     const updateTutorPrompt = async (prompt: string) => {
         const tutorMessage = {
-            role: 'user', content: `#Tutor#:${prompt}`
+            role: 'user', content: `#Teacher#:${prompt}`
         } as Message;
 
 
         await Promise.resolve(updateConversation({
-            role: 'tutor', content: prompt
+            role: 'teacher', content: prompt
         }));
 
         var messageBoxNow = studentStore.getState().messageBox;
@@ -209,8 +209,8 @@ const TestSimulation = () => {
         //first update tutor's response, then update students' response in getResponse
         const tutorResponse = prompt;
         setPrompt('');
-        var conversationForBigPicture = [...conversation, { role: 'tutor', content: tutorResponse }];
-        await updateConversationDatabase([{ role: 'tutor', content: tutorResponse }]);
+        var conversationForBigPicture = [...conversation, { role: 'teacher', content: tutorResponse }];
+        await updateConversationDatabase([{ role: 'teacher', content: tutorResponse }]);
         await updateTutorPrompt(tutorResponse);
         let iterationCount = 0;
         const maxIterations = 30;
@@ -247,7 +247,7 @@ const TestSimulation = () => {
                     role: 'system', content: `Remember, always output your output in the following format:
 #StudentName#Student's content 
 Or
-#Tutor#Tutor's content` });
+#Teacher#Teacher's content` });
                 continue;
             }
             console.log('Name:', result, name, [initialMessage, { role: 'system', content: conversationString }]);
