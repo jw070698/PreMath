@@ -53,7 +53,7 @@ const StudentBar: React.FC<StudentBarProps> = ({ student }) => {
                         }}
                     >Level of Knowledge: </div>
                     <ul style={{ padding: '4px', margin: '2px', marginLeft: '8px' }}>
-                        {student.personals.characteristics.map((_, i) => {
+                        {student.personals.mathConceptUnderstanding.map((_, i) => {
                             return (
                                 <li key={i}>{_}</li>
                             )
@@ -68,7 +68,7 @@ const StudentBar: React.FC<StudentBarProps> = ({ student }) => {
                     }}>Argumentation Skills: </div>
                     <ul style={{ padding: '4px', margin: '2px', marginLeft: '8px' }}>
 
-                        {student.personals.ability.map((_, i) => {
+                        {student.personals.argumentationSkill.map((_, i) => {
                             return (
                                 <li>{_}</li>
                             )

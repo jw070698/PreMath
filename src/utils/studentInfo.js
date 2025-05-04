@@ -5,11 +5,11 @@ export const studentInfo = [{
         "age": 15,
         "initialDialogue": "Excuse me, could you please repeat what was just said?",
         "personals": {
-            "characteristics": [
+            "mathConceptUnderstanding": [
                 "Easily distracted by social media during online classes.",
                 "Finds the current format not immersive compared to real-world class."
             ],
-            "ability": [
+            "argumentationSkill": [
                 "Average understanding of course material.",
                 "Struggles to remember details due to lack of attention."
             ],
@@ -26,12 +26,12 @@ export const studentInfo = [{
         "age": 16,
         "initialDialogue": "It's so easy...",
         "personals": {
-            "characteristics": [
+            "mathConceptUnderstanding": [
                 "Finds academic topics dull and uninspiring.",
                 "Believes that the content being taught is boring.",
                 "Arrogant."
             ],
-            "ability": [
+            "argumentationSkill": [
                 "Satisfactory understanding of key topics.",
                 "Lack of a solid grasp of knowledge, leading to minor mistakes."
             ],
@@ -49,11 +49,11 @@ export const studentInfo = [{
         "age": 15,
         "initialDialogue": "...",
         "personals": {
-            "characteristics": [
+            "mathConceptUnderstanding": [
                 "No strong desire to figure out everything.",
                 "Easily loses focus if the content is too hard to understand."
             ],
-            "ability": [
+            "argumentationSkill": [
                 "Basic grasp of most subjects but lacks deep understanding."
             ],
             "behavior": [
@@ -69,11 +69,11 @@ export const studentInfo = [{
         "age": 16,
         "initialDialogue": "I cannot understand this...",
         "personals": {
-            "characteristics": [
+            "mathConceptUnderstanding": [
                 "Hardworking but lacks confidence in her abilities.",
                 "Anxious about making mistakes."
             ],
-            "ability": [
+            "argumentationSkill": [
                 "Understands material well but doubts her comprehension level.",
                 "Often underestimates her capabilities."
             ],
@@ -90,11 +90,11 @@ export const studentInfo = [{
         "age": 15,
         "initialDialogue": "Uh, I'm not sure about this. Maybe someone else knows?",
         "personals": {
-            "characteristics": [
+            "mathConceptUnderstanding": [
                 "Shy and reserved.",
                 "Lacks self-assurance and tends to second-guess himself."
             ],
-            "ability": [
+            "argumentationSkill": [
                 "Good grasp of concepts but struggles to apply them in practice."
             ],
             "behavior": [
@@ -111,11 +111,11 @@ export const studentInfo = [{
         "age": 16,
         "initialDialogue": "...",
         "personals": {
-            "characteristics": [
+            "mathConceptUnderstanding": [
                 "Unconfident when presenting answers.",
                 "Fearful of peer judgment, especially during presentations."
             ],
-            "ability": [
+            "argumentationSkill": [
                 "Strong understanding of most topics.",
                 "Has difficulties in tackling new or complex subjects."
             ],
@@ -132,11 +132,11 @@ export const studentInfo = [{
         "age": 12,
         "initialDialogue": "Done!",
         "personals": {
-            "characteristics": [
+            "mathConceptUnderstanding": [
                 "Quick learner who enjoys challenges.",
                 "Gets bored easily because the material is too easy or repetitive."
             ],
-            "ability": [
+            "argumentationSkill": [
                 "Advanced understanding of the subject matter.",
                 "Seeks out additional resources for self-learning."
             ],
@@ -154,14 +154,14 @@ export const studentInfo = [{
         "age": 12,
         "initialDialogue": "Could you explain that again, please?",
         "personals": {
-            "characteristics": [
-                "Generally understands basic algebraic concepts.",
-                "Struggling to understand common factor and the greatest common factor.",
+            "mathConceptUnderstanding": [
+                //"Generally understands basic algebraic concepts.",
+                "Struggles with common and greatest common factors.",
                 "Has a misconception of the greatest common factor."
             ],
-            "ability": [
-                "Demonstrates clear reasoning when guided step-by-step.",
-                "Able to support claims with logical explanations when given sufficient time."
+            "argumentationSkill": [
+                //"Demonstrates clear reasoning when guided step-by-step.",
+                "Can explain her reasoning well if given enough time."
                 //"Solid grasp of fundamental concepts.",
                 //"Needs extra time to fully understand complex topics."
             ],
@@ -180,9 +180,9 @@ export const studentInfo = [{
         "age": 12,
         "initialDialogue": "I've got this.",
         "personals": {
-            "characteristics": [
-                "Has a solid understanding of grade-level algebraic concepts.",
-                "Successfully solves problems involving simplifying expressions, identifying factors, and determining the greatest common factor."
+            "mathConceptUnderstanding": [
+                "Understands 7th-grade algebra well.",
+                "Can simplify expressions, find factors, and identify the greatest common factor correctly."
                 //"Frequently asserts opinions without providing supporting evidence.",
                 //"Tends to make claims that lack clear reasoning.",
                 //"Often appears overconfident despite the absence of substantiated details."
@@ -190,9 +190,9 @@ export const studentInfo = [{
                 //asily discouraged by difficult material.",
                 //"Unconfident due to his lack of knowledge and low understanding."
             ],
-            "ability": [
+            "argumentationSkill": [
                 "Often makes claims without providing reasoning or evidence.",
-                "Needs support in articulating logical steps and connecting ideas to evidence when solving problems."
+                //"Needs support in articulating logical steps and connecting ideas to evidence when solving problems."
                 //"Limited understanding due to learning challenges.",
                 //"Needs additional support to master foundational concepts."
             ],
@@ -215,10 +215,10 @@ export const studentInfo = [{
         "age": 16,
         "initialDialogue": "Apologies for being late again. May I ask what I missed?",
         "personals": {
-            "characteristics": [
+            "mathConceptUnderstanding": [
                 "Fatigue in the class."
             ],
-            "ability": [
+            "argumentationSkill": [
                 "Good understanding when alert.",
                 "Performance declines with tiredness."
             ],
@@ -236,11 +236,11 @@ export const studentInfo = [{
         "age": 15,
         "initialDialogue": "...",
         "personals": {
-            "characteristics": [
+            "mathConceptUnderstanding": [
                 "Experiencing burnout from excessive screen time.",
                 "Struggles to main tain concentration."
             ],
-            "ability": [
+            "argumentationSkill": [
                 "Competent but inconsistent in retaining information.",
                 "Normally, start with an incorrect answer."
                 //"Mental exhaustion affects comprehension."
@@ -259,10 +259,10 @@ export const studentInfo = [{
         "age": 16,
         "initialDialogue": "...",
         "personals": {
-            "characteristics": [
+            "mathConceptUnderstanding": [
                 "Occasionally fatigued but generally manages responsibilities well."
             ],
-            "ability": [
+            "argumentationSkill": [
                 "Delayed understanding because of tiredness.",
                 //"Occasionally forgets details due to tiredness."
                 "Normally, start with an incorrect answer."

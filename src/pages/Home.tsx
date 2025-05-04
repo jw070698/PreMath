@@ -42,7 +42,7 @@ const Home = () => {
       const participantIdInt = parseInt(participantId);
       const name = formData.get('name') as string;
       const email = formData.get('email') as string;
-      const jannTeachingTime = formData.get('jann-teaching-time') as string;
+      const jannTeachingTime = formData.get('math-teaching-time') as string;
   
       setParticipantId(participantIdInt);
       setName(name);
@@ -162,8 +162,8 @@ const Home = () => {
                   <input type="email" name="email" required />
                 </label>
                 <label>
-                  How long have you taught in JANN?
-                  <input type="text" name="jann-teaching-time" required />
+                  How long have you taught math?
+                  <input type="text" name="math-teaching-time" required />
                 </label>
                 <button 
                   className="home-button" 

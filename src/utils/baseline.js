@@ -23,5 +23,5 @@ export const baselineDescription = [
 
 ]
 export const baselineQuestion = `How will you engage students and encourage them to participate in solving the math problem ? `
-export const baselineTask=`Considering the characteristics and abilities among the students, please outline your possible strategies(what you will do) that could promote each student's engagement. 
+export const baselineTask=`Considering the math concept understanding and argumentation skill among the students, please outline your possible strategies(what you will do) that could promote each student's engagement. 
 `

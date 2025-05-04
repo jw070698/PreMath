@@ -14,8 +14,8 @@ export interface StudentInfo {
     "grade": number,
     "initialDialogue": string,
     "personals": {
-        "characteristics": string[],
-        "ability": string[],
+        "mathConceptUnderstanding": string[],
+        "argumentationSkill": string[],
         "behavior": string[]
     }
 }

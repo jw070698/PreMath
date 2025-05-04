@@ -36,11 +36,16 @@
   color: #28a745; /* 能力部分的颜色 */
 }
 
+.behavior {
+  border: 1px solid #ffc107; /* 行为部分的边框 */
+  color: #dc3545; /* 行为部分的颜色 */
+}
+
 .characteristics,
-.ability {
+.ability,
+.behavior {
   display: flex;
   flex-direction: column;
-
   border: 2px solid #ffffff00; /* 性格部分的边框 */
   border-radius: 5px;
   margin-bottom: 5px;
