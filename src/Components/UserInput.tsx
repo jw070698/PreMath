@@ -63,45 +63,67 @@ const UserInput: React.FC<UserInputProps> = ({ prompt, user, index, onLabelAdd }
         }
 
         const range = selection.getRangeAt(0);
-        const text = range.toString().trim();
+        let selectedText = range.toString().trim();
         
-        if (text && messageRef.current) {
-            // Get the exact text content of the message
-            const messageContent = messageRef.current.textContent || '';
-            
-            // Find the exact position of the selected text in the message
-            const start = messageContent.indexOf(text);
-            if (start === -1) {
-                console.error('Selected text not found in message');
-                return;
-            }
-            const end = start + text.length;
-            
+        if (selectedText && messageRef.current) {
+            // Get original text content without any special characters or label texts
+            const cleanText = messageRef.current.textContent?.replace(/[✓✗]/g, '').replace(/\s+/g, ' ').trim() || '';
             const rect = range.getBoundingClientRect();
             const messageRect = messageRef.current.getBoundingClientRect();
+
+            // Remove any existing label texts from the selection
+            const labelTexts = labels.map(l => l.label);
+            const labelPattern = new RegExp(`(${labelTexts.join('|')})`, 'g');
+            selectedText = selectedText.replace(labelPattern, '').trim();
+
+            // Find the actual text content within the message
+            let startContainer = range.startContainer;
+            let currentNode: Node | null = startContainer;
+            let startPos = 0;
+
+            // Walk through text nodes to find the correct position
+            while (currentNode && currentNode !== messageRef.current) {
+                if (currentNode.previousSibling) {
+                    currentNode = currentNode.previousSibling;
+                    // Clean the node text from any label texts
+                    const nodeText = currentNode.textContent?.replace(/[✓✗]/g, '').replace(labelPattern, '').replace(/\s+/g, ' ') || '';
+                    startPos += nodeText.length;
+                } else if (currentNode.parentNode) {
+                    currentNode = currentNode.parentNode;
+                } else {
+                    break;
+                }
+            }
+
+            startPos += range.startOffset;
+
+            // Ensure we're not counting any special characters or label texts in the offset
+            const beforeSelection = cleanText.substring(0, startPos).replace(labelPattern, '');
+            const actualStartPos = beforeSelection.length;
             
-            setSelectedText({
-                text,
-                start,
-                end
+            console.log('Selection info:', {
+                selectedText,
+                startPos: actualStartPos,
+                endPos: actualStartPos + selectedText.length,
+                fullContent: cleanText
             });
-            
+
+            setSelectedText({
+                text: selectedText,
+                start: actualStartPos,
+                end: actualStartPos + selectedText.length
+            });
+
             setDropdownPosition({
                 top: rect.bottom - messageRect.top,
                 left: rect.left - messageRect.left
             });
-            
+
             setShowDropdown(true);
         }
     };
 
     const verifyLabel = async (text: string, label: string): Promise<boolean> => {
-        // For "none" label, we always return true since it's a valid option for any text
-        if (label.toLowerCase() === 'none') {
-            console.log('Label is "none", automatically verifying as true');
-            return true;
-        }
-        
         // The simplified prompt for better verification results
         const prompt = `Analyze if the text: "${text}" is a ${label} in Toulmin's argument model.
 
@@ -112,6 +134,7 @@ Definitions:
 - Warrant: The reasoning that connects data to claim
 - Qualifier: Words that limit the scope of the claim
 - Rebuttal: Counter-arguments or exceptions to the claim
+- None: Text that doesn't fit into any of the above categories
 
 RESPOND ONLY WITH "true" or "false".`;
 
@@ -136,35 +159,20 @@ RESPOND ONLY WITH "true" or "false".`;
         if (selectedText) {
             console.log("Applying label:", labelType, "to text:", selectedText.text);
             
-            // 기존에 같은 위치에 라벨이 있는지 확인
-            const existingIndex = labels.findIndex(
-                l => l.start === selectedText.start && l.end === selectedText.end
-            );
+            // 기존 라벨과 겹치는지 확인
+            const overlappingLabels = labels.filter(label => {
+                // 완전히 겹치거나 부분적으로 겹치는 경우 확인
+                return (
+                    (selectedText.start <= label.end && selectedText.end >= label.start) ||
+                    (label.start <= selectedText.end && label.end >= selectedText.start)
+                );
+            });
+
+            // 겹치는 라벨들 제거
+            let updatedLabels = labels.filter(label => !overlappingLabels.includes(label));
             
-            // 현재 시도 횟수 계산
-            let currentAttempts = 1;
-            if (existingIndex !== -1) {
-                currentAttempts = (labels[existingIndex].attempts || 0) + 1;
-            }
-            
-            // 검증 상태 확인
-            let isVerified = false;
-            if (labelType.toLowerCase() === 'none') {
-                isVerified = true;
-            } else {
-                // 이전에 맞춘 적이 있는지 확인
-                const wasVerifiedBefore = existingIndex !== -1 && labels[existingIndex].isVerified;
-                
-                // 현재 라벨이 이전과 동일한지 확인
-                const isSameLabel = existingIndex !== -1 && labels[existingIndex].label === labelType;
-                
-                // 현재 라벨 검증
-                const currentVerification = await verifyLabel(selectedText.text, labelType);
-                
-                // 이전에 맞췄거나 현재 맞춘 경우 true
-                isVerified = wasVerifiedBefore || currentVerification;
-            }
-            
+            // 검증 수행
+            const isVerified = await verifyLabel(selectedText.text, labelType);
             console.log(`Label "${labelType}" is verified:`, isVerified);
             
             // 새 라벨 객체 생성
@@ -174,18 +182,12 @@ RESPOND ONLY WITH "true" or "false".`;
                 start: selectedText.start,
                 end: selectedText.end,
                 isVerified: isVerified,
-                attempts: currentAttempts
+                attempts: overlappingLabels.length > 0 ? 
+                    Math.max(...overlappingLabels.map(l => l.attempts || 0)) + 1 : 1
             };
             
-            let updatedLabels: LabelWithVerification[];
-            if (existingIndex !== -1) {
-                // 기존 라벨 업데이트
-                updatedLabels = [...labels];
-                updatedLabels[existingIndex] = newLabel;
-            } else {
-                // 새 라벨 추가
-                updatedLabels = [...labels, newLabel];
-            }
+            // 새 라벨 추가
+            updatedLabels = [...updatedLabels, newLabel];
             
             // 로컬 상태 업데이트
             setLabels(updatedLabels);
@@ -210,17 +212,11 @@ RESPOND ONLY WITH "true" or "false".`;
                         currentMessage.labels = [];
                     }
 
-                    // 기존 라벨 찾기
-                    const existingLabelIndex = currentMessage.labels.findIndex(
-                        (l) => l.start === selectedText.start && l.end === selectedText.end
+                    // 겹치는 라벨 제거 후 새 라벨 추가
+                    currentMessage.labels = currentMessage.labels.filter(label => 
+                        !(label.start <= selectedText.end && label.end >= selectedText.start)
                     );
-
-                    // 현재 메시지의 labels 업데이트
-                    if (existingLabelIndex !== -1) {
-                        currentMessage.labels[existingLabelIndex] = newLabel;
-                    } else {
-                        currentMessage.labels.push(newLabel);
-                    }
+                    currentMessage.labels.push(newLabel);
 
                     // Firestore에 저장
                     await setDoc(scenarioDocRef, {
@@ -228,12 +224,7 @@ RESPOND ONLY WITH "true" or "false".`;
                             [currentMessageIndex]: {
                                 content: prompt,
                                 role: user.toLowerCase(),
-                                labels: currentMessage.labels.map(label => ({
-                                    ...label,
-                                    isVerified: label.start === selectedText.start && 
-                                              label.end === selectedText.end ? 
-                                              isVerified : label.isVerified
-                                }))
+                                labels: currentMessage.labels
                             }
                         }
                     }, { merge: true });
@@ -246,18 +237,15 @@ RESPOND ONLY WITH "true" or "false".`;
                 console.error("Error saving label data to Firestore:", error);
             }
             
-            // 전역 상태 업데이트 (conversation)
             if (onLabelAdd) {
                 console.log("Passing label to parent component");
                 onLabelAdd(newLabel);
             }
             
-            // Diagram 렌더링을 위한 값 설정
             console.log("Setting store values for diagram");
             studentStore.getState().setSelectedDropdownOption(labelType);
             studentStore.getState().setSelectedStudentName(user);
             
-            // 드롭다운 데이터 설정
             studentStore.getState().setDropdownData(prev => ({
                 ...prev,
                 [user]: labelType
@@ -319,7 +307,7 @@ RESPOND ONLY WITH "true" or "false".`;
                     <span
                         key={`label-${i}`}
                         className={`label-${label.label.toLowerCase()}`}
-                        title={`${label.label}${label.isVerified ? ' ✓' : ' ✗'}`}
+                        title={`${label.label}`}
                         style={{
                             backgroundColor: getLabelColor(label.label, label.isVerified),
                             padding: '2px 4px',
@@ -344,7 +332,7 @@ RESPOND ONLY WITH "true" or "false".`;
                             whiteSpace: 'nowrap',
                             zIndex: 1
                         }}>
-                            {label.label} {label.isVerified ? '✓' : '✗'}
+                            {label.label}
                         </span>
                     </span>
                 );
