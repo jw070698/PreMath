@@ -780,15 +780,15 @@ You should not that good in solving the math problem. You don't listen other stu
 
 export const initialTutorDialogue = [
     `Alright, team, let’s tackle the problem on finding out how many apple trees and pear trees there are on the farm. Please start your discussion now.`,
-    `Alright, team, let’s tackle the problem on finding out the greatest common factor of 3x^2 and 12x. Please start your discussion now.`,
-    `Alright, team, let’s tackle the problem.`,
-    `Alright, team, let’s tackle the problem on finding out the greatest common factor of 3x^2 and 12x. Please start your discussion now.`
+    `Alright, team, let’s tackle the problem on finding out the greatest common factor of 3x² and 12x. Please start your discussion now.`,
+    `Let’s talk about how you can find the greatest common factor of 3x² and 12x. What’s your thinking here?`,
+    `Alright, team, let’s tackle the problem on finding out the greatest common factor of 3x² and 12x. Please start your discussion now.`
 ]
 export const problems = [
     `Given x^2+8x+ _, what are some possible values for the blank that would allow us to write the expression in factored form? EXPLAIN!`,
-    `Find the greatest common factor of 3x^2 and 12x.`,
-    `Find the greatest common factor of 3x^2 and 12x.`,
-    `Find the greatest common factor of 3x^2 and 12x.`
+    `Find the greatest common factor of 3x² and 12x.`,
+    `Find the greatest common factor of 3x² and 12x.`,
+    `Find the greatest common factor of 3x² and 12x.`
 ]
 
 export const getInitialTutorDialogue = (index) => {

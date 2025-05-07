@@ -51,7 +51,7 @@ const StudentBar: React.FC<StudentBarProps> = ({ student }) => {
                             fontWeight: 'bold',
                             fontSize: '15px'
                         }}
-                    >Level of Knowledge: </div>
+                    >Math Understanding: </div>
                     <ul style={{ padding: '4px', margin: '2px', marginLeft: '8px' }}>
                         {student.personals.mathConceptUnderstanding.map((_, i) => {
                             return (

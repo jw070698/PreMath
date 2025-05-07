@@ -152,7 +152,7 @@ export const studentInfo = [{
         "name": "Chloe",
         "grade": 7,
         "age": 12,
-        "initialDialogue": "Could you explain that again, please?",
+        "initialDialogue": "Umm... maybe 3x²? I'm not sure... but I think greatest common factor is just the smaller term.",
         "personals": {
             "mathConceptUnderstanding": [
                 //"Generally understands basic algebraic concepts.",
@@ -178,7 +178,7 @@ export const studentInfo = [{
         "name": "Noah",
         "grade": 7,
         "age": 12,
-        "initialDialogue": "I've got this.",
+        "initialDialogue": "I think I got it. But my answer is a bit different.",
         "personals": {
             "mathConceptUnderstanding": [
                 "Understands 7th-grade algebra well.",
@@ -287,3 +287,40 @@ Rectangle B: The bottom part of the "L" is 4 meters long and 3 meters wide.
 Task:
 
 Find the total area of the playground by calculating the area of each rectangle and then adding them together.`]
+
+
+// Example constants for student responses
+export const ExampleMathProblem = ['Students are given a square filled with grey boxes and asked to place white boxes so that no grey boxes touch—horizontally, vertically, or diagonally. An example with 16 grey boxes shows how most are replaced with white ones to achieve this. Students must determine how many white boxes are needed for larger squares (36, 100, 1024 grey boxes), with the insight that about 75% of the boxes must be white to meet the condition.']
+export const ExampleResponse = [`
+3 Student A: Did you just do one hundred? (…)
+4 Student B: I have six rows here, here.  
+5 Student A: But why six?
+6 Student B: I wanted five, I did f/, I did six. (..)
+7 Student A: But look, (..) you did six here, didn’t you? Do //four//
+8 Student B: //Mh// (affirmatory). 
+9 Student A: f/, no. 
+10 Student B: It is supposed to be hundred, ehm
+11 Student A: Yes yes but look, you can just do it like this (takes piece of paper) simply ten here (points in one direction) and ten here (points to another). Then you have hundred.
+12 Student B: (….) I hate maths.
+
+40 Teacher: So why does that match the side lengths?
+41 Student A: Because it is the same, isn’t it, this way (hand from bottom to top) and this way (left to right).
+
+60 Student B: How does the thousand work, I mean this (points at worksheet) here?
+61 Teacher: Think about that together. (…) Ayla already found the side length of that thing. (..) And maybe you see something HERE (points to the worksheet) that you can (.) carry on (.) somehow. Something this and this here (.) have in common...
+62 Student A: Yes, there always is one, and then not, and then one, and then not.
+63 Teacher: Yes, exactly. And then there for example is a row where there is nothing.
+64 Student A: Mhm. (Affirmatory)
+65 Teacher: And that is actually kind of the same everywhere. 
+            And maybe you find something general (.) how you can find it out WITHOUT COUNTING.
+66 Student A: So if thirty (..) times thirty is nine hundred (..) nine hundred thirty, (..) nine hundred thirty, 
+           thirt/ (5 sec), nine hundred sixty. It has to be nine hundred sixty. See (.) write that down.
+           (..) I will now draw these boxes, if nine hundred sixty comes out I was (..) right.
+67 Student A: Wow, how many boxes ARE THERE? (..) I think this (.) is this one thousand-thingy, isn’t it, isn’t it, isn’t it?
+ 
+81 Student A: We first (.) calculated the square root with you. And then ehm, we arrived at thirty-two. 
+         Then we tried (.) to do thirty-two boxes, top and bottom. We didn’t manage to. 
+         Yes, and we got to nine hundred sixty, because we calculated it.
+82 Teacher: So what did you calculate to get to the nine hundred sixty?
+83 Student A: Yes well, because the book said ehm (.) thirty by thirty is nine hundred, and then we calculated a bit.
+`]

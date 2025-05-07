@@ -66,20 +66,16 @@ const UserInput: React.FC<UserInputProps> = ({ prompt, user, index, onLabelAdd }
         const text = range.toString().trim();
         
         if (text && messageRef.current) {
-            // Get the text content of the message
+            // Get the exact text content of the message
             const messageContent = messageRef.current.textContent || '';
-            console.log("Full message content:", messageContent);
-            console.log("Selected text:", text);
             
-            // Calculate the full text content before the selection to get accurate offset
-            const textBefore = document.createRange();
-            textBefore.setStart(messageRef.current.firstChild || messageRef.current, 0);
-            textBefore.setEnd(range.startContainer, range.startOffset);
-            
-            // Get correct start and end offsets relative to the full text
-            const start = textBefore.toString().length;
+            // Find the exact position of the selected text in the message
+            const start = messageContent.indexOf(text);
+            if (start === -1) {
+                console.error('Selected text not found in message');
+                return;
+            }
             const end = start + text.length;
-            console.log("Selection indices:", start, end);
             
             const rect = range.getBoundingClientRect();
             const messageRect = messageRef.current.getBoundingClientRect();

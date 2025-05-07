@@ -14,6 +14,7 @@ import { RiExpandDiagonalLine, RiCollapseDiagonalLine } from 'react-icons/ri';
 import Diagram from './Diagram';
 import { LuFastForward } from 'react-icons/lu';
 import { getFirestore, doc, setDoc, collection, addDoc, updateDoc, increment, getDoc } from 'firebase/firestore';
+import { studentInfo, ExampleMathProblem, ExampleResponse } from '../utils/studentInfo';
 
 const Students = () => {
     const { descriptionOfStudents, updateStudents, participantId, tutorUpSecenario, setDescriptionOfStudents, instantStrategies, setInstantStrategies, overallStrategies, setOverallStrategies, conversationDatabase, students, loadLog, scenarioIndex, initializeMessageBox, initializeConversation, updateConversation, updateMessageBox, studentInfo, conversation, messageBox, hasScenarioStarted, setHasScenarioStarted, setSelectedDropdownOption, setSelectedStudentName }
@@ -482,42 +483,69 @@ const Students = () => {
                 }
             });
             
-            // 디버깅 정보 출력
-            console.log('Current students:', students);
-            console.log('Student info:', studentInfo);
-            console.log('Active student roles:', activeStudentRoles);
-            console.log('Last speaker:', lastSpeaker);
-            
             // 마지막 발언자가 아닌 학생을 찾습니다
             const nextStudentRoles = Array.from(activeStudentRoles).filter(role => role !== lastSpeaker);
             if (nextStudentRoles.length === 0) return; // 대화할 다른 학생이 없는 경우
             
             const nextStudentRole = nextStudentRoles[0] as string; // 다음으로 대화할 학생
-            console.log('Next student role:', nextStudentRole);
             
             // students 배열에서 해당 학생의 인덱스 찾기
             let studentIdx = -1;
+            let currentStudentInfo = null;
             for (let i = 0; i < students.length; i++) {
                 const currentStudent = studentInfo[students[i]];
-                console.log(`Checking student ${i}:`, currentStudent);
                 if (currentStudent && currentStudent.name === nextStudentRole) {
                     studentIdx = i;
+                    currentStudentInfo = currentStudent;
                     break;
                 }
             }
             
-            if (studentIdx === -1) {
+            if (studentIdx === -1 || !currentStudentInfo) {
                 console.error(`Student ${nextStudentRole} not found in students array`);
-                // 첫 번째 가능한 학생을 선택
-                studentIdx = 0;
+                return;
             }
+
+            // 전체 대화를 컨텍스트로 사용
+            const conversationContext = conversation.map(msg => `${msg.role}: ${msg.content}`).join('\n');
+            
+            // 학생의 특성 정보를 문자열로 변환
+            const studentCharacteristics = `
+                Student Profile:
+                - Name: ${currentStudentInfo.name}
+                - Grade: ${currentStudentInfo.grade}
+                - Age: ${currentStudentInfo.age}
+                - Math Understanding: ${currentStudentInfo.personals.mathConceptUnderstanding.join(', ')}
+                - Argumentation Skills: ${currentStudentInfo.personals.argumentationSkill.join(', ')}
+            `;
+//- Behavior: ${currentStudentInfo.personals.behavior.join(', ')}
             
             // 대화 요청 (마지막 발언에 대해 학생이 응답)
             const response = await chat([
                 ...messageBox[studentIdx],
                 {
                     role: 'user',
-                    content: `${nextStudentRole} should continue the conversation, responding to what was just said. Write a natural response as ${nextStudentRole} without including "${nextStudentRole}:" at the beginning.`
+                    content: `${studentCharacteristics}
+
+Full conversation context:
+${conversationContext}
+
+As ${nextStudentRole}, respond to the last message in the conversation. 
+For example, if a math problem is given: ${ExampleMathProblem[0]}, students and teachers responses should be like: ${ExampleResponse[0]}.
+Please follow the example response as closely as possible in terms of the content and the tone and the length of the response of student A and B.
+
+Remember:
+1. You are a ${currentStudentInfo.grade}th grade student, not a teacher. Your response should reflect your grade level.
+2. Consider your ${studentCharacteristics}: math understanding, argumentation skills, and behavior traits.
+3. Use casual, student-like language. Don't try to teach or explain like a teacher. 
+4. Their conversation should sound realistic. Avoid overly explanatory or teacher-like language.
+5. Keep your response concise and authentic.
+6. Keep the tone less cooperative and more exploratory; they might interrupt, misunderstand, or repeat things.
+7. Don’t make the dialogue flow too smoothly—add some false starts, or trial-and-error thinking that mimics how real students talk. Don’t try to make your response sound too coherent or logical. It’s okay to be vague, unsure, or even wrong.
+8. Don’t teach, explain, or sound like a tutor.
+9. Be consice as possible. Only one sentence for each response.
+
+Write a natural response without including "${nextStudentRole}:" at the beginning.`
                 }
             ]);
             
@@ -703,11 +731,22 @@ const Students = () => {
         setSelectedDropdownOption(selectedOption);
         setSelectedStudentName(studentRole);
     
-        // verification prompt (remains the same)
-        const verificationPrompt = `Student message: "${studentMessage}"\n\
-                                    Selected option of Toulmin Argument: "${selectedOption}"\n\
-                                    Check if the student's answer matches the option among Toulmin Argument(Claim, Warrant, Qualifier, Rebuttal, None of the above).\
-                                    If it is, only answer "correct"; if not, answer "incorrect".`;
+        // verification prompt
+        const verificationPrompt = `Analyze the following student message and determine if it matches the selected Toulmin Argument component:
+
+Student Message: "${studentMessage}"
+Selected Toulmin Component: "${selectedOption}"
+
+Toulmin Argument Components:
+- Data: A fact or observation that supports the argument. E.g., "Both expressions contain 3x."
+- Data Claim: A tentative or uncertain conclusion drawn from data, often hedged with language like "maybe" or "I think." E.g., "Maybe the GCF is 3x²."
+- Claim: The main point or conclusion the speaker is trying to prove. E.g., "The greatest common factor is 3x."
+- Warrant: The reasoning or rule that connects the data to the claim. E.g., "If a factor appears in both expressions, it can be the GCF."
+- Qualifier: A word or phrase that shows the degree of certainty of the claim. E.g., "probably," "I'm not sure..."
+- Rebuttal: A statement that challenges or doubts the claim or reasoning. E.g., "I thought it might be bigger."
+- None of the above: When the message doesn't fit any of the Toulmin components
+
+Based on these, does the student's message match the selected Toulmin component? Answer only with "correct" or "incorrect".`;
     
         try {
             const response = await chat([{ role: 'user', content: verificationPrompt }]);
